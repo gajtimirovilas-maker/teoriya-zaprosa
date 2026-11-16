@@ -137,8 +137,37 @@ section[id],#stage2{scroll-margin-top:80px}
 .chips span{font-size:13.5px;padding:5px 11px;border-radius:99px;background:rgba(255,255,255,.06);border:1px solid var(--line)}
 .lesson.wide{grid-column:1/-1}
 
+/* аккордеон уроков */
+.acc{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;align-items:start}
+.lsn{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:0;transition:border-color .2s,background .2s}
+.lsn:hover{border-color:#3a3a4d}
+.lsn[open]{border-color:rgba(139,92,246,.55);background:linear-gradient(160deg,rgba(139,92,246,.10),transparent 60%),var(--card)}
+.lsn summary{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:18px 18px;font-weight:400;font-size:inherit}
+.lsn summary::after{display:none}
+.lsn-n{font-family:Unbounded,sans-serif;font-size:15px;color:var(--accent2);width:40px;height:40px;border-radius:12px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.25);display:grid;place-items:center}
+.lsn-t{display:grid;gap:4px;min-width:0}
+.lsn-t b{font-size:16.5px;line-height:1.3}
+.lsn-t em{font-style:normal;font-size:13.5px;font-weight:700;color:var(--money);line-height:1.35}
+.lsn i{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);position:relative;flex:none}
+.lsn i::before,.lsn i::after{content:"";position:absolute;left:50%;top:50%;width:12px;height:2px;background:var(--text);transform:translate(-50%,-50%);transition:transform .2s}
+.lsn i::after{transform:translate(-50%,-50%) rotate(90deg)}
+.lsn[open] i::after{transform:translate(-50%,-50%) rotate(0)}
+.lsn-body{padding:0 18px 18px 72px;display:grid;gap:10px}
+.lsn-body p{color:var(--muted);font-size:15px;padding:0}
+.lsn-body ul{list-style:none;display:grid;gap:7px}
+.lsn-body li{position:relative;padding-left:20px;font-size:15px;color:var(--text)}
+.lsn-body li::before{content:"";position:absolute;left:2px;top:9px;width:7px;height:7px;border-radius:50%;background:var(--grad)}
+.lsn-body .hw{font-size:14.5px;color:var(--text);background:rgba(255,255,255,.04);border-radius:10px;padding:9px 12px}
+.lsn-body .hw b{color:var(--accent2)}
+.lsn.key{border-color:rgba(250,204,21,.5);background:linear-gradient(140deg,rgba(250,204,21,.09),rgba(139,92,246,.08) 60%),var(--card)}
+.lsn.new{border-color:rgba(34,211,238,.5);background:linear-gradient(140deg,rgba(34,211,238,.09),rgba(139,92,246,.08) 60%),var(--card)}
+.badge-in{justify-self:start;background:var(--money);color:#1a1400;font-weight:800;font-size:11px;padding:3px 9px;border-radius:99px;text-transform:uppercase;letter-spacing:.05em}
+.badge-in.new{background:var(--accent2);color:#032530}
+.calc-h{margin-top:56px;font-size:24px}
+.mid-cta{margin-top:20px;display:flex;justify-content:center}
+
 /* 100k */
-.calc{margin-top:40px;display:grid;grid-template-columns:repeat(4,1fr) auto;gap:12px;align-items:stretch}
+.calc{margin-top:24px;display:grid;grid-template-columns:repeat(3,1fr) auto;gap:12px;align-items:stretch}
 .calc .it{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;font-size:14.5px;color:var(--muted)}
 .calc .it b{display:block;font-family:Unbounded,sans-serif;font-size:clamp(16px,1.6vw,20px);white-space:nowrap;color:var(--text);margin-bottom:6px}
 .calc .total{background:var(--grad);border-radius:16px;padding:18px 24px;display:flex;flex-direction:column;justify-content:center;color:#fff}
@@ -274,8 +303,9 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
   .hero-grid,.team,.form-grid,.price{grid-template-columns:1fr}
   .collage{max-width:460px;margin:10px auto 0;transform:none}
   .facts{grid-template-columns:repeat(2,1fr)}
-  .calc{grid-template-columns:1fr 1fr}
+  .calc{grid-template-columns:1fr 1fr 1fr}
   .calc .total{grid-column:1/-1}
+  .acc{grid-template-columns:1fr}
   .get-grid{grid-template-columns:1fr 1fr}
 }
 @media (max-width:680px){
@@ -314,7 +344,17 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
   .lesson p{font-size:14.5px}
   .earn{padding:10px 12px}
   .earn b{font-size:14.5px}
-  .calc{gap:8px;margin-top:20px}
+  .calc{gap:8px;margin-top:16px;grid-template-columns:1fr}
+  .calc-h{font-size:19px;margin-top:40px}
+  .mid-cta .btn{width:100%}
+  .acc{gap:8px}
+  .lsn summary{gap:10px;padding:14px}
+  .lsn-n{width:34px;height:34px;font-size:13px;border-radius:10px}
+  .lsn-t b{font-size:15px}
+  .lsn-t em{font-size:12.5px}
+  .lsn i{width:26px;height:26px}
+  .lsn-body{padding:0 14px 16px 14px}
+  .lsn-body li,.lsn-body p{font-size:14.5px}
   .calc .it{padding:14px;font-size:13px}
   .calc .total b{font-size:22px}
   .tabs{margin:20px 0 16px;gap:8px}
@@ -406,17 +446,17 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 <section class="hero">
   <div class="wrap hero-grid">
     <div>
-      <span class="tag"><span class="dot"></span>Открыт набор на 2 поток · места ограничены</span>
+      <span class="tag"><span class="dot"></span>Набор во 2 поток открыт · мест мало</span>
       <h1>Стань специалистом по&nbsp;ИИ и&nbsp;начни зарабатывать <span class="money">от&nbsp;100&nbsp;000&nbsp;₽</span> уже сейчас</h1>
-      <p class="sub">Курс «Теория запроса»: нейросети с нуля до уровня, когда за вашу работу платят. Тексты, документы и таблицы, изображения, автоматизация бизнеса, сайты и AI-видео.</p>
+      <p class="sub">Пока одни спорят, заберёт ли ИИ их работу, другие уже на нём зарабатывают. За 20 дней вы пройдёте путь с нуля до первых заказов: документы, автоматизация, сайты, AI-фото и видео.</p>
       <div class="hero-btns">
-        <a href="#signup" class="btn btn-main">Записаться на курс →</a>
-        <a href="#trial" class="btn btn-ghost">▶ Смотреть пробный урок</a>
+        <a href="#signup" class="btn btn-main">Хочу на курс →</a>
+        <a href="#trial" class="btn btn-ghost">▶ Пробный урок</a>
       </div>
       <div class="facts">
-        <div class="fact"><b>с нуля</b><span>покажем даже регистрацию и VPN</span></div>
-        <div class="fact"><b>19:00</b><span>ежедневные уроки</span></div>
-        <div class="fact"><b>~20 дней</b><span>2 этапа: ИИ и видео</span></div>
+        <div class="fact"><b>с нуля</b><span>научим даже регистрации и VPN</span></div>
+        <div class="fact"><b>18 уроков</b><span>2 этапа: ИИ и AI-видео</span></div>
+        <div class="fact"><b>19:00</b><span>каждый день, есть записи</span></div>
         <div class="fact"><b>3 / 5 мес</b><span>рассрочка</span></div>
       </div>
     </div>
@@ -426,7 +466,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
         <img class="c2" src="img/works/w03.jpg" alt="AI-реклама парфюма">
         <img class="c3" src="img/works/w26.jpg" alt="AI-реклама сумки">
       </div>
-      <p class="collage-note">Эти фото не снимали на камеру: их создали нейросети на курсе</p>
+      <p class="collage-note">Ни одно из этих фото не снято на камеру. Это работы учеников курса</p>
     </div>
   </div>
 </section>
@@ -439,16 +479,16 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 <!-- ABOUT -->
 <section id="about">
   <div class="wrap">
-    <h2 class="reveal">Что такое <span class="grad">«Теория запроса»</span></h2>
-    <p class="sub reveal"><b style="color:var(--text)">Искусство диалога с ИИ.</b> Курс о том, как сделать искусственный интеллект своим рабочим инструментом, а не игрушкой на пару вечеров.</p>
+    <h2 class="reveal">Почему <span class="grad">«Теория запроса»</span></h2>
+    <p class="sub reveal">Доступ к ИИ сегодня есть у всех. Зарабатывает тот, кто умеет с ним разговаривать.</p>
     <div class="about-grid">
       <div class="box reveal">
         <p class="big">Учим принципам, а не кнопкам</p>
-        <p>Сервисы будут меняться, модели станут сильнее. Сам по себе доступ к ИИ почти ничего не даёт: результат получает тот, кто понимает, какую задачу поставить, какой инструмент выбрать и как довести ответ до рабочего состояния.</p>
-        <p>Кто умеет правильно формулировать запрос, освоит любую новую нейросеть за вечер. Отсюда и название.</p>
+        <p>Нейросети обновляются каждый месяц, и кнопки устаревают. Принцип остаётся: правильно поставленная задача даёт рабочий результат в любой нейросети.</p>
+        <p>Освоите это один раз и любую новую модель возьмёте за вечер.</p>
       </div>
       <div class="box voice reveal">
-        <p class="big">Пример: табель голосом</p>
+        <p class="big">Табель сам себя заполняет</p>
         <p>Вы говорите в телефон:</p>
         <div class="bubble">Табель на сегодня. Всем по 8 часов, третьему и четвёртому по 4, пятый отсутствовал.</div>
         <table class="mini-table">
@@ -457,7 +497,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
           <tr><td>3–4</td><td>…</td><td>4</td></tr>
           <tr><td>5</td><td>…</td><td style="color:#f87171">Н</td></tr>
         </table>
-        <p style="margin-top:14px">Таблица заполняется сама. И это лишь один урок из курса.</p>
+        <p style="margin-top:14px">Готово. И это лишь один урок из восемнадцати.</p>
       </div>
     </div>
   </div>
@@ -467,151 +507,168 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 <section id="program" style="background:var(--bg2)">
   <div class="wrap">
     <h2 class="reveal">Программа курса</h2>
-    <p class="sub reveal">Под каждой темой: сколько обычно платят за такую работу. Начинать брать заказы можно уже после первых уроков.</p>
+    <p class="sub reveal">Нажмите на урок, чтобы увидеть, чему именно научитесь. Под каждой темой указано, сколько за это платят. Первые деньги можно заработать уже после первого урока.</p>
 
-    <div class="stage-head"><h3>Этап 1. Нейросети и автоматизация</h3><span>10 дней</span></div>
-    <div class="lessons">
+    <div class="stage-head"><h3>Этап 1. Нейросети и автоматизация</h3><span>8 уроков · 10 дней</span></div>
+    <div class="acc">
 
-      <div class="lesson reveal">
-        <span class="num">УРОК 1</span>
-        <h3>Старт: аккаунты, VPN, оплата</h3>
-        <p>Регистрируем Google-аккаунт, ставим VPN на компьютер, устанавливаем Google Chrome и преодолеваем все трудности по пути. Разбираем основные способы оплаты зарубежных нейросетей.</p>
-        <div class="hw"><b>ДЗ:</b> пройти регистрацию и оформить подписку</div>
-        <div class="earn"><span class="ico">💰</span><div><small>Сколько можно заработать</small><b>1 000–3 000 ₽ за настройку под ключ: регистрация, VPN и оплата подписки для клиента</b></div></div>
-      </div>
+      <details class="lsn reveal">
+        <summary><span class="lsn-n">01</span><span class="lsn-t"><b>Старт: аккаунты, VPN и оплата</b><em>💰 от 3 000 ₽ за каждого клиента</em></span><i></i></summary>
+        <div class="lsn-body">
+          <ul>
+            <li>Регистрируем Google-аккаунт и ставим VPN на компьютер</li>
+            <li>Устанавливаем Google Chrome и проходим все подводные камни</li>
+            <li>Разбираем, как оплачивать зарубежные нейросети из России</li>
+            <li>Делаем то же самое для клиента: это первая услуга, которую можно продать</li>
+          </ul>
+          <p class="hw"><b>ДЗ:</b> пройти регистрацию и оформить подписку</p>
+        </div>
+      </details>
 
-      <div class="lesson reveal">
-        <span class="num">УРОК 2</span>
-        <h3>Текстовые нейросети: возможности и ограничения</h3>
-        <p>Как работают LLM. Сравниваем ChatGPT, Claude и Grok: бесплатные и платные версии, лимиты, память, документы и изображения. Галлюцинации и «относительная объективность», голосовой чат, плагины для почты, таблиц и календаря. Настраиваем персонализацию ChatGPT.</p>
-        <div class="earn"><span class="ico">💰</span><div><small>Сколько можно заработать</small><b>1 000–5 000 ₽ за заказ: тексты, посты, описания товаров, ответы клиентам</b></div></div>
-      </div>
+      <details class="lsn reveal">
+        <summary><span class="lsn-n">02</span><span class="lsn-t"><b>Текстовые нейросети: ChatGPT, Claude, Grok</b><em>💰 5 000–20 000 ₽ за тексты и контент-план</em></span><i></i></summary>
+        <div class="lsn-body">
+          <ul>
+            <li>Как устроены LLM изнутри и почему они ошибаются</li>
+            <li>Чем отличаются ChatGPT, Claude и Grok, что дают платные версии</li>
+            <li>Лимиты, память, длинные диалоги, документы и изображения</li>
+            <li>Галлюцинации и как не дать ИИ подстроиться под ваш вопрос</li>
+            <li>Голосовой чат, плагины для почты, таблиц и календаря</li>
+            <li>Настраиваем ChatGPT под себя: личный помощник под вашу работу</li>
+          </ul>
+        </div>
+      </details>
 
-      <div class="lesson reveal">
-        <span class="num">УРОК 3</span>
-        <h3>Как формулировать запросы и работать с информацией</h3>
-        <p>Из чего состоит точный запрос: определение, контекст, тезис, задача. Типичные ошибки на примерах. Глубокое исследование: источники, сравнение позиций, отличие фактов от предположений ИИ.</p>
-        <div class="earn"><span class="ico">💰</span><div><small>Сколько можно заработать</small><b>3 000–15 000 ₽ за исследование рынка, конкурентов или подбор информации</b></div></div>
-      </div>
+      <details class="lsn reveal">
+        <summary><span class="lsn-n">03</span><span class="lsn-t"><b>Как ставить задачу ИИ, чтобы он не ошибался</b><em>💰 10 000–30 000 ₽ за исследование рынка</em></span><i></i></summary>
+        <div class="lsn-body">
+          <ul>
+            <li>Формула точного запроса: определение, контекст, тезис, задача</li>
+            <li>Типичные ошибки на примерах и как их исправить</li>
+            <li>Глубокое исследование: поиск, источники, сравнение позиций</li>
+            <li>Как отличить проверенный факт от догадки нейросети</li>
+          </ul>
+        </div>
+      </details>
 
-      <div class="lesson reveal">
-        <span class="num">УРОК 5</span>
-        <h3>Работа с изображениями</h3>
-        <p>Создаём и редактируем изображения: композиция, свет, стиль, фон, одежда, отдельные объекты. Соотношения сторон, логотипы, референсы, рекламные визуалы, карточки товаров, учебные материалы.</p>
-        <div class="earn"><span class="ico">💰</span><div><small>Сколько можно заработать</small><b>3 000–15 000 ₽ за карточки и визуалы, 5 000–30 000 ₽ за AI-фотосессию</b></div></div>
-      </div>
+      <details class="lsn key reveal">
+        <summary><span class="lsn-n">04</span><span class="lsn-t"><span class="badge-in">★ Ключевой урок</span><b>Документы и таблицы: от формул до профессиональных отчётов</b><em>💰 10 000–30 000 ₽ за документ, до 100 000 ₽ за автоматизацию отчётности</em></span><i></i></summary>
+        <div class="lsn-body">
+          <p>Самый денежный урок курса. Работу, на которую у людей уходят дни, вы будете делать за час.</p>
+          <ul>
+            <li>Word и PDF: договоры, шаблоны, отчёты, большие файлы</li>
+            <li>Excel и Google Таблицы: формулы любой сложности</li>
+            <li>Профессиональные таблицы, которые не стыдно отдать клиенту</li>
+            <li>Пакетная обработка: десятки документов за один запрос</li>
+          </ul>
+        </div>
+      </details>
 
-      <div class="lesson key reveal">
-        <span class="badge">★ Ключевой урок</span>
-        <span class="num">УРОК 4</span>
-        <h3>Работа с документами: от генерации текста до тонны документов</h3>
-        <p>Самый практичный урок курса. Учимся всему: от формул до профессиональных таблиц. Нейросеть берёт на себя рутину, на которую у людей уходят часы и дни, а вы выполняете в разы больше работы.</p>
-        <div class="chips"><span>Word и PDF</span><span>Excel и Google Таблицы</span><span>Формулы</span><span>Профессиональные таблицы</span><span>Отчёты</span><span>Договоры и шаблоны</span><span>Большие файлы</span><span>Пакетная обработка</span></div>
-        <div class="earn"><span class="ico">💰</span><div><small>Сколько можно заработать</small><b>3 000–15 000 ₽ за разовый документ или таблицу, 15 000–50 000 ₽ за автоматизацию таблиц и отчётности</b></div></div>
-      </div>
+      <details class="lsn reveal">
+        <summary><span class="lsn-n">05</span><span class="lsn-t"><b>Изображения: визуалы, карточки, фотосессии</b><em>💰 10 000–30 000 ₽ за пакет визуалов, до 50 000 ₽ за фотосессию</em></span><i></i></summary>
+        <div class="lsn-body">
+          <ul>
+            <li>Управляем композицией, светом, стилем и фоном</li>
+            <li>Меняем одежду и отдельные объекты на фото</li>
+            <li>Логотипы, референсы, соотношения сторон</li>
+            <li>Рекламные визуалы и карточки товаров для маркетплейсов</li>
+          </ul>
+        </div>
+      </details>
 
-      <div class="lesson reveal">
-        <span class="num">УРОК 6</span>
-        <h3>Промпты и автоматизация</h3>
-        <p>Превращаем запросы в рабочие инструкции. Через плагины автоматизируем табели, таблицу заказов, учёт платежей по рассрочкам, работу с Google Диском. Структура рабочего промпта, цепочки операций, шаблоны, защита от ошибок с деньгами и документами.</p>
-        <div class="earn"><span class="ico">💰</span><div><small>Сколько можно заработать</small><b>15 000–50 000 ₽ за автоматизацию, от 50 000 ₽ за комплексную автоматизацию бизнеса</b></div></div>
-      </div>
+      <details class="lsn reveal">
+        <summary><span class="lsn-n">06</span><span class="lsn-t"><b>Промпты и автоматизация бизнеса</b><em>💰 30 000–100 000 ₽ за автоматизацию</em></span><i></i></summary>
+        <div class="lsn-body">
+          <ul>
+            <li>Превращаем запрос в инструкцию для целого рабочего процесса</li>
+            <li>Табели, заказы, платежи по рассрочкам, Google Диск: всё само</li>
+            <li>Структура рабочего промпта и цепочки операций</li>
+            <li>Защита от ошибок с деньгами и документами</li>
+            <li>Какие данные нельзя доверять нейросетям</li>
+          </ul>
+        </div>
+      </details>
 
-      <div class="lesson reveal">
-        <span class="num">УРОК 7</span>
-        <h3>Основы вайб-кодинга</h3>
-        <p>Программируем без знания кода: вы объясняете словами, ИИ пишет программу. Изучаем Codex, Claude Code и другие инструменты.</p>
-        <div class="hw"><b>ДЗ (сложное):</b> сделать свой сайт и приложение</div>
-        <div class="earn"><span class="ico">💰</span><div><small>Сколько можно заработать</small><b>15 000–50 000 ₽ за сайт-лендинг, от 30 000 ₽ за приложение</b></div></div>
-      </div>
+      <details class="lsn new reveal">
+        <summary><span class="lsn-n">07</span><span class="lsn-t"><span class="badge-in new">✦ Новый урок</span><b>Вайб-кодинг: сайты и приложения без знания кода</b><em>💰 30 000–100 000 ₽ за сайт, от 50 000 ₽ за приложение</em></span><i></i></summary>
+        <div class="lsn-body">
+          <p>Вы описываете словами, что нужно, а ИИ пишет программу. Этот урок заменил урок про собственный GPT: он даёт навык, за который платят больше.</p>
+          <ul>
+            <li>Codex, Claude Code и другие инструменты вайб-кодинга</li>
+            <li>Как поставить задачу, чтобы получить рабочий сайт</li>
+            <li>Публикация сайта в интернете</li>
+          </ul>
+          <p class="hw"><b>ДЗ (сложное):</b> сделать свой сайт и приложение</p>
+        </div>
+      </details>
 
-      <div class="lesson wide reveal">
-        <span class="num">УРОК 8</span>
-        <h3>Создание локальных программ</h3>
-        <p>Делаем полноценные программы в одном HTML-файле: калькуляторы, тренажёры, игры, инструменты для бизнеса. Такой файл можно отправить кому угодно, и он откроется на любом устройстве. Примеры работ учеников есть <a href="#works" data-tab="apps">ниже</a>.</p>
-        <div class="earn"><span class="ico">💰</span><div><small>Сколько можно заработать</small><b>5 000–30 000 ₽ за программу для клиента: калькулятор, конфигуратор, учебный тренажёр</b></div></div>
-      </div>
+      <details class="lsn reveal">
+        <summary><span class="lsn-n">08</span><span class="lsn-t"><b>Свои программы в одном файле</b><em>💰 15 000–50 000 ₽ за программу для клиента</em></span><i></i></summary>
+        <div class="lsn-body">
+          <ul>
+            <li>Калькуляторы, тренажёры, игры и инструменты для бизнеса</li>
+            <li>Один HTML-файл, который открывается на любом устройстве</li>
+            <li>Как сделать программу переносимой и отправить кому угодно</li>
+          </ul>
+          <p class="hw">Примеры программ учеников есть <a href="#works" data-tab="apps">ниже</a>.</p>
+        </div>
+      </details>
     </div>
 
-    <div class="stage-head" id="stage2"><h3>Этап 2. AI-фото и видеогенерация</h3><span>10 практических модулей</span></div>
-    <p class="sub reveal" style="margin-bottom:20px">От первой генерации до реалистичных видеороликов, мультсериалов и профессиональной рекламы для брендов.</p>
-    <div class="lessons">
-      <div class="lesson reveal">
-        <span class="num">МОДУЛЬ 1</span>
-        <h3>Знакомство с AI-платформой</h3>
-        <p>Платформа Higgsfield и её основные инструменты: интерфейс, генерация изображений и видео, работа с референсами, основы промптинга.</p>
-        <div class="earn"><span class="ico">🧭</span><div><small>Зачем</small><b>База для всех заказов этапа: дальше работаем только на практике</b></div></div>
-      </div>
-      <div class="lesson reveal">
-        <span class="num">МОДУЛЬ 2</span>
-        <h3>Создание профессиональной AI-модели</h3>
-        <p>Собственная реалистичная AI-модель: внешность персонажа, создание и сохранение модели, чтобы использовать её в любых фотогенерациях.</p>
-        <div class="earn"><span class="ico">💰</span><div><small>Сколько можно заработать</small><b>5 000–20 000 ₽ за AI-модель или виртуального амбассадора бренда</b></div></div>
-      </div>
-      <div class="lesson reveal">
-        <span class="num">МОДУЛЬ 3</span>
-        <h3>Перенос одежды и AI-fashion-фотосъёмка</h3>
-        <p>Три способа переноса одежды на AI-модель. Реалистичные fashion-фотосессии с сохранением деталей одежды, образа и атмосферы.</p>
-        <div class="earn"><span class="ico">💰</span><div><small>Сколько можно заработать</small><b>5 000–30 000 ₽ за fashion-фотосессию для бренда одежды</b></div></div>
-      </div>
-      <div class="lesson reveal">
-        <span class="num">МОДУЛЬ 4</span>
-        <h3>Предметная AI-фотосъёмка</h3>
-        <p>Рекламные фото товаров без студии: предметы, фоны, композиция, референсы. Качественные коммерческие изображения.</p>
-        <div class="earn"><span class="ico">💰</span><div><small>Сколько можно заработать</small><b>3 000–15 000 ₽ за серию предметных фото или карточек товара</b></div></div>
-      </div>
-      <div class="lesson reveal">
-        <span class="num">МОДУЛЬ 5</span>
-        <h3>Интерьерная AI-фотосъёмка</h3>
-        <p>Реалистичные интерьерные фото на примере спальни: изображения мебели, перенос предметов, гармоничная композиция.</p>
-        <div class="earn"><span class="ico">💰</span><div><small>Сколько можно заработать</small><b>5 000–20 000 ₽ за интерьерную съёмку для мебельного магазина или дизайнера</b></div></div>
-      </div>
-      <div class="lesson reveal">
-        <span class="num">МОДУЛЬ 6</span>
-        <h3>Создание анимационных AI-видео</h3>
-        <p>Оживляем статичные изображения: промпты для видеогенерации, анимированные сцены, видеоролики из фотографий.</p>
-        <div class="earn"><span class="ico">💰</span><div><small>Сколько можно заработать</small><b>2 000–10 000 ₽ за анимированный ролик из фото</b></div></div>
-      </div>
-      <div class="lesson reveal">
-        <span class="num">МОДУЛЬ 7</span>
-        <h3>Мультсериалы с помощью AI</h3>
-        <p>Свой анимационный проект от идеи и персонажей до готовой истории: последовательные кадры, оживление героев, озвучка, сборка мультфильма.</p>
-        <div class="earn"><span class="ico">💰</span><div><small>Сколько можно заработать</small><b>10 000–50 000 ₽ за мультфильм для бренда, или свой мультблог</b></div></div>
-      </div>
-      <div class="lesson reveal">
-        <span class="num">МОДУЛЬ 8</span>
-        <h3>Реалистичные AI-сериалы</h3>
-        <p>Видеосюжеты с постоянными персонажами: история, сцены, диалоги, генерация видео и сборка эпизодов в цельный сюжет.</p>
-        <div class="earn"><span class="ico">💰</span><div><small>Сколько можно заработать</small><b>от 20 000 ₽ за эпизод на заказ, или свой сериал-блог с монетизацией</b></div></div>
-      </div>
-      <div class="lesson reveal">
-        <span class="num">МОДУЛЬ 9</span>
-        <h3>Реалистичные AI-ролики</h3>
-        <p>Кинематографичные ролики: идея, сценарий, раскадровка, реалистичные кадры и видеосцены, сборка готового ролика.</p>
-        <div class="earn"><span class="ico">💰</span><div><small>Сколько можно заработать</small><b>10 000–40 000 ₽ за ролик для соцсетей</b></div></div>
-      </div>
-      <div class="lesson key reveal">
-        <span class="badge">★ Финал этапа</span>
-        <span class="num">МОДУЛЬ 10</span>
-        <h3>Профессиональные рекламные AI-ролики</h3>
-        <p>Коммерческая видеореклама для брендов и бизнеса: рекламная идея и сценарий, работа с продуктом, AI-моделями и виртуальными амбассадорами, референсы, генерация сцен и полноценное рекламное видео.</p>
-        <div class="earn"><span class="ico">💰</span><div><small>Сколько можно заработать</small><b>15 000–80 000 ₽ за рекламный ролик, от 20 000 ₽/мес за ведение AI-контента для бизнеса</b></div></div>
-      </div>
-    </div>
-    <div class="box reveal m2" style="margin-top:22px">
-      <p class="big">Что вы сможете создавать после второго этапа</p>
-      <div class="chips" style="margin-top:6px"><span>AI-модели и виртуальные фотосессии</span><span>Fashion-съёмки для брендов одежды</span><span>Предметные рекламные фото</span><span>Интерьерные съёмки с мебелью</span><span>Анимации из фотографий</span><span>Мультфильмы и мультсериалы</span><span>AI-сериалы и короткометражки</span><span>Кинематографичные ролики для соцсетей</span><span>Рекламу для брендов и бизнеса</span></div>
+    <div class="stage-head" id="stage2"><h3>Этап 2. AI-фото и видео</h3><span>10 модулей · около 10 дней</span></div>
+    <p class="sub reveal" style="margin-bottom:18px">Самое востребованное направление: минута AI-ролика стоит <b style="color:var(--money)">от 10 000 ₽</b>, а заказов становится больше каждый месяц.</p>
+    <div class="acc">
+      <details class="lsn reveal">
+        <summary><span class="lsn-n">01</span><span class="lsn-t"><b>Знакомство с AI-платформой</b><em>🧭 база для всех заказов этапа</em></span><i></i></summary>
+        <div class="lsn-body"><ul><li>Платформа Higgsfield: интерфейс и инструменты</li><li>Генерация изображений и видео</li><li>Референсы и основы промптинга</li></ul></div>
+      </details>
+      <details class="lsn reveal">
+        <summary><span class="lsn-n">02</span><span class="lsn-t"><b>Своя AI-модель</b><em>💰 15 000–40 000 ₽ за модель или амбассадора бренда</em></span><i></i></summary>
+        <div class="lsn-body"><ul><li>Создаём реалистичную модель с нужной внешностью</li><li>Сохраняем её и используем в любых фотогенерациях</li></ul></div>
+      </details>
+      <details class="lsn reveal">
+        <summary><span class="lsn-n">03</span><span class="lsn-t"><b>AI-fashion: одежда на модели</b><em>💰 20 000–60 000 ₽ за фотосессию для бренда</em></span><i></i></summary>
+        <div class="lsn-body"><ul><li>Три способа переноса одежды на AI-модель</li><li>Сохраняем детали вещи, образ и атмосферу</li><li>Fashion-фотосессии без студии и фотографа</li></ul></div>
+      </details>
+      <details class="lsn reveal">
+        <summary><span class="lsn-n">04</span><span class="lsn-t"><b>Предметная съёмка товаров</b><em>💰 10 000–30 000 ₽ за серию фото</em></span><i></i></summary>
+        <div class="lsn-body"><ul><li>Рекламные фото товаров без студии</li><li>Фоны, композиция, референсы</li><li>Изображения для маркетплейсов и рекламы</li></ul></div>
+      </details>
+      <details class="lsn reveal">
+        <summary><span class="lsn-n">05</span><span class="lsn-t"><b>Интерьерная съёмка</b><em>💰 15 000–40 000 ₽ за проект для мебельщиков и дизайнеров</em></span><i></i></summary>
+        <div class="lsn-body"><ul><li>Практика на примере спальни</li><li>Расставляем реальную мебель в AI-интерьере</li><li>Гармоничная композиция и свет</li></ul></div>
+      </details>
+      <details class="lsn reveal">
+        <summary><span class="lsn-n">06</span><span class="lsn-t"><b>Оживляем фото: анимационные видео</b><em>💰 от 10 000 ₽ за минуту видео</em></span><i></i></summary>
+        <div class="lsn-body"><ul><li>Промпты для видеогенерации</li><li>Анимированные сцены из статичных фото</li></ul></div>
+      </details>
+      <details class="lsn reveal">
+        <summary><span class="lsn-n">07</span><span class="lsn-t"><b>Свой мультсериал</b><em>💰 от 10 000 ₽ за минуту, или свой мультблог</em></span><i></i></summary>
+        <div class="lsn-body"><ul><li>От идеи и персонажей до готовой истории</li><li>Последовательные кадры и оживление героев</li><li>Озвучка и сборка мультфильма</li></ul></div>
+      </details>
+      <details class="lsn reveal">
+        <summary><span class="lsn-n">08</span><span class="lsn-t"><b>Реалистичные AI-сериалы</b><em>💰 от 50 000 ₽ за эпизод на заказ</em></span><i></i></summary>
+        <div class="lsn-body"><ul><li>Постоянные персонажи из серии в серию</li><li>Сюжет, сцены и диалоги</li><li>Сборка эпизодов в цельную историю</li></ul></div>
+      </details>
+      <details class="lsn reveal">
+        <summary><span class="lsn-n">09</span><span class="lsn-t"><b>Кинематографичные ролики</b><em>💰 от 10 000 ₽ за минуту ролика</em></span><i></i></summary>
+        <div class="lsn-body"><ul><li>Идея, сценарий и раскадровка</li><li>Реалистичные кадры и видеосцены</li><li>Монтаж готового ролика для соцсетей</li></ul></div>
+      </details>
+      <details class="lsn key reveal">
+        <summary><span class="lsn-n">10</span><span class="lsn-t"><span class="badge-in">★ Финал</span><b>Рекламные ролики для брендов</b><em>💰 30 000–150 000 ₽ за ролик</em></span><i></i></summary>
+        <div class="lsn-body"><ul><li>Рекламная идея и сценарий</li><li>Продукт, AI-модели и виртуальные амбассадоры</li><li>Полноценное рекламное видео для бизнеса</li></ul></div>
+      </details>
     </div>
 
-    <h3 style="margin-top:60px;font-size:24px" class="reveal">Как может сложиться 100 000 ₽ в месяц</h3>
+    <h3 class="reveal calc-h">100 000 ₽ в месяц — это всего три заказа</h3>
     <div class="calc reveal">
-      <div class="it"><b>2 × 25 000 ₽</b>автоматизация таблиц и отчётности</div>
-      <div class="it"><b>1 × 25 000 ₽</b>сайт-лендинг для бизнеса</div>
-      <div class="it"><b>3 × 5 000 ₽</b>AI-фотосессии или карточки</div>
-      <div class="it"><b>2 × 5 000 ₽</b>рекламные AI-ролики</div>
+      <div class="it"><b>40 000 ₽</b>сайт-лендинг для бизнеса</div>
+      <div class="it"><b>30 000 ₽</b>автоматизация таблиц и отчётов</div>
+      <div class="it"><b>3 мин × 10 000 ₽</b>рекламный AI-ролик</div>
       <div class="total"><span>Итого</span><b>100 000 ₽</b></div>
     </div>
-    <p class="note">Цены ориентировочные, по рынку фриланса. Курс не гарантирует заработок: результат зависит от того, как вы примените знания. Но инструменты у вас будут.</p>
+    <div class="mid-cta reveal"><a href="#signup" class="btn btn-main">Хочу так же → записаться</a></div>
+    <p class="note">Цены ориентировочные, по рынку. Курс не гарантирует заработок: результат зависит от того, как вы примените знания.</p>
   </div>
 </section>
 
@@ -619,7 +676,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 <section id="works">
   <div class="wrap">
     <h2 class="reveal">Работы наших учеников</h2>
-    <p class="sub reveal">Всё ниже создано с помощью нейросетей на курсе: фото, видео и даже программы.</p>
+    <p class="sub reveal">Всё это сделали обычные люди за 20 дней курса. Вы сможете так же.</p>
     <div class="tabs" role="tablist">
       <button class="tab on" data-pane="photos">📸 AI-фото</button>
       <button class="tab" data-pane="videos">🎬 AI-видео</button>
@@ -652,7 +709,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 <section id="trial" style="background:var(--bg2)">
   <div class="wrap" style="text-align:center">
     <h2 class="reveal">Пробный урок</h2>
-    <p class="sub reveal" style="margin:0 auto">Посмотрите, как проходят занятия, прежде чем записываться.</p>
+    <p class="sub reveal" style="margin:0 auto">Посмотрите, как проходят занятия, и решите сами.</p>
     <div class="trial-grid">
       <div class="vid" data-src="video/trial1.mp4"><img src="video/trial1.jpg" alt="Пробный урок, часть 1" loading="lazy"><span class="play"></span><span class="cap">Часть 1 · 7 мин</span></div>
       <div class="vid" data-src="video/trial2.mp4"><img src="video/trial2.jpg" alt="Пробный урок, часть 2" loading="lazy"><span class="play"></span><span class="cap">Часть 2 · 8 мин</span></div>
@@ -670,22 +727,21 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
     </div>
     <div class="reveal">
       <h2>Преподаватели</h2>
-      <p class="sub">Ильяс и Мялхаьзни — авторы курса «Теория запроса». Ведут уроки сами, проверяют домашние задания и отвечают на вопросы учеников.</p>
+      <p class="sub">Ильяс и Мялхаьзни — авторы курса. Сами ведут уроки, сами проверяют домашние задания, сами отвечают на вопросы.</p>
       <div class="bio">
         <p class="bio-name">Ильяс <span>молодой учёный · преподаватель университета · педагог</span></p>
-        <p>Ждал появления нейросетей два года, а когда они появились, начал работать с ними с первого дня. Изучал, как устроены нейросети, по научным источникам, а не по роликам из интернета. Уже через месяц обучал работе с ИИ преподавателей. С тех пор сделал с помощью ИИ много реальных проектов.</p>
+        <p>Два года ждал появления нейросетей и работает с ними с первого дня. Разобрался, как они устроены, по научным работам, а не по роликам. Через месяц уже учил преподавателей. Сегодня за плечами много проектов, сделанных с ИИ.</p>
         <div class="bio-facts">
           <div><b>с 1-го дня</b><span>работает с нейросетями</span></div>
           <div><b>через месяц</b><span>уже обучал преподавателей</span></div>
           <div><b>наука</b><span>понимает, как ИИ устроен внутри</span></div>
         </div>
-        <p class="bio-q">Преподаватель университета и педагог: знает не только как работает ИИ, но и как объяснить это так, чтобы понял каждый.</p>
+        <p class="bio-q">Знает, как работает ИИ, и умеет объяснить так, что поймёт каждый.</p>
       </div>
       <ul>
-        <li>На связи с учениками, как пишут в отзывах, «двадцать четыре часа в сутки, семь дней в неделю»</li>
-        <li>Объясняют простым языком: курс проходят даже с телефона, без компьютера</li>
-        <li>Показывают реальные рабочие задачи, а не теорию ради теории</li>
-        <li>Подскажут, какие подписки действительно нужны, чтобы вы не переплачивали</li>
+        <li>На связи «24 на 7», как пишут ученики в отзывах</li>
+                <li>Только реальные задачи, за которые платят деньги</li>
+        <li>Подскажут, какие подписки нужны, чтобы вы не переплачивали</li>
       </ul>
       <div class="contacts-mini">
         <a class="btn btn-wa" href="https://wa.me/79640656713" target="_blank" rel="noopener">WhatsApp Ильяс</a>
@@ -729,14 +785,14 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 <!-- GET -->
 <section id="get">
   <div class="wrap">
-    <h2 class="reveal">Что вы получаете</h2>
+    <h2 class="reveal">Что входит в курс</h2>
     <div class="get-grid">
-      <div class="get reveal"><div class="emo">📅</div><h3>Уроки каждый день</h3><p>Ежедневно в 19:00, удобно совмещать с работой или учёбой.</p></div>
-      <div class="get reveal"><div class="emo">✅</div><h3>Проверка ДЗ</h3><p>Отдельный канал для домашних заданий с проверкой и разбором ошибок.</p></div>
-      <div class="get reveal"><div class="emo">👥</div><h3>Закрытое сообщество</h3><p>Общение с другими учениками, созвоны и отчёты.</p></div>
-      <div class="get reveal"><div class="emo">🎞</div><h3>Доступ на полгода</h3><p>Все видеоуроки остаются у вас ещё 6 месяцев после курса.</p></div>
-      <div class="get reveal"><div class="emo">🎓</div><h3>Сертификат</h3><p>Сертификат о прохождении обучения.</p></div>
-      <div class="get reveal"><div class="emo">🚀</div><h3>Навык, который продаётся</h3><p>Применяйте в работе, в своём бизнесе или продавайте как услугу.</p></div>
+      <div class="get reveal"><div class="emo">📅</div><h3>Урок каждый день</h3><p>В 19:00. Легко совмещать с работой.</p></div>
+      <div class="get reveal"><div class="emo">✅</div><h3>Проверка ДЗ</h3><p>Разбираем каждую ошибку, пока не получится.</p></div>
+      <div class="get reveal"><div class="emo">👥</div><h3>Закрытое сообщество</h3><p>Созвоны, отчёты и поддержка группы.</p></div>
+      <div class="get reveal"><div class="emo">🎞</div><h3>Записи на полгода</h3><p>Пересматривайте уроки ещё 6 месяцев.</p></div>
+      <div class="get reveal"><div class="emo">🎓</div><h3>Сертификат</h3><p>Подтверждение, что вы прошли обучение.</p></div>
+      <div class="get reveal"><div class="emo">🚀</div><h3>Навык, который продаётся</h3><p>Для работы, своего бизнеса или заказов.</p></div>
     </div>
   </div>
 </section>
@@ -744,25 +800,26 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 <!-- PRICE -->
 <section id="price" style="background:var(--bg2)">
   <div class="wrap">
-    <h2 class="reveal">Стоимость обучения</h2>
+    <h2 class="reveal">Курс окупается с первых заказов</h2>
+    <p class="sub reveal">35 000 ₽ — это всего 3–4 минуты рекламного AI-ролика.</p>
     <div class="price">
       <div class="price-main reveal">
-        <span class="tag"><span class="dot"></span>Второй поток</span>
+        <span class="tag"><span class="dot"></span>Второй поток · мест мало</span>
         <div class="p">35 000 ₽</div>
-        <p style="color:var(--muted)">или в рассрочку на 3 или 5 месяцев</p>
+        <p style="color:var(--muted)">или рассрочка на 3 или 5 месяцев</p>
         <ul>
-          <li>Оба этапа: нейросети и видеогенерация</li>
+          <li>18 уроков: нейросети, автоматизация, сайты, AI-фото и видео</li>
           <li>Проверка домашних заданий</li>
           <li>Закрытое сообщество и созвоны</li>
           <li>Доступ к урокам на полгода</li>
           <li>Сертификат</li>
         </ul>
-        <a href="#signup" class="btn btn-main" style="width:100%">Забронировать место</a>
+        <a href="#signup" class="btn btn-main" style="width:100%">Забронировать место →</a>
       </div>
       <div class="price-side">
-        <div class="box reveal"><p class="big">Рассрочка</p><p style="color:var(--muted)">Через партнёрскую организацию на 3 или 5 месяцев, с первоначальным взносом или без.</p></div>
-        <div class="box reveal"><p class="big">Подписки на нейросети</p><p style="color:var(--muted)">Дополнительно понадобится около 5 000–10 000 ₽. Подскажем, что действительно нужно, чтобы вы не переплачивали.</p></div>
-        <div class="box reveal"><p class="big limit">Места ограничены</p><p style="color:var(--muted)">Группа набирается прямо сейчас. ИИ уже пришёл в вашу профессию: вопрос только в том, будете ли вы пользоваться им лучше других.</p></div>
+        <div class="box reveal"><p class="big">Рассрочка</p><p style="color:var(--muted)">На 3 или 5 месяцев, можно без первоначального взноса.</p></div>
+        <div class="box reveal"><p class="big">Подписки на нейросети</p><p style="color:var(--muted)">Ещё около 5 000–10 000 ₽. Подскажем, что реально нужно.</p></div>
+        <div class="box reveal"><p class="big limit">Места ограничены</p><p style="color:var(--muted)">ИИ уже пришёл в вашу профессию. Вопрос один: вы будете пользоваться им лучше других или наблюдать со стороны?</p></div>
       </div>
     </div>
   </div>
@@ -773,12 +830,12 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
   <div class="wrap">
     <h2 class="reveal">Частые вопросы</h2>
     <div class="faq">
-      <details><summary>Я никогда не работал с нейросетями. Справлюсь?</summary><p>Да. Начинаем с нуля: на первом уроке показываем, как зарегистрироваться, настроить VPN, установить браузер и оплатить зарубежные сервисы.</p></details>
-      <details><summary>Можно ли пройти курс с телефона?</summary><p>Да, ученики первого потока проходили курс и делали все задания с телефона. Но для урока по вайб-кодингу и работы с большими документами удобнее компьютер.</p></details>
-      <details><summary>Сколько времени нужно уделять?</summary><p>Уроки каждый день в 19:00, плюс время на домашние задания. Все записи остаются у вас на полгода, так что пропущенный урок можно посмотреть позже.</p></details>
-      <details><summary>Вы гарантируете заработок?</summary><p>Честно: нет. Результат зависит от того, как вы примените знания. Мы даём навыки и показываем, за что платят, а дальше всё в ваших руках.</p></details>
+      <details><summary>Я никогда не работал с нейросетями. Справлюсь?</summary><p>Да. Начинаем с нуля: на первом уроке вместе регистрируемся, ставим VPN и оплачиваем сервисы.</p></details>
+      <details><summary>Можно ли пройти курс с телефона?</summary><p>Да, ученики первого потока проходили курс с телефона. Для вайб-кодинга и больших документов удобнее компьютер.</p></details>
+      <details><summary>Сколько времени нужно уделять?</summary><p>Урок в 19:00 плюс время на домашку. Пропустили урок — посмотрите запись.</p></details>
+      <details><summary>Вы гарантируете заработок?</summary><p>Честно: нет. Мы даём навык и показываем, за что платят. Дальше всё зависит от вас.</p></details>
       <details><summary>Какие нужны расходы кроме курса?</summary><p>Подписки на нейросети, примерно 5 000–10 000 ₽. Мы подскажем, какие действительно нужны.</p></details>
-      <details><summary>Как оформить рассрочку?</summary><p>Оставьте заявку или напишите в WhatsApp: расскажем условия рассрочки на 3 или 5 месяцев, с первоначальным взносом или без.</p></details>
+      <details><summary>Как оформить рассрочку?</summary><p>Оставьте заявку или напишите в WhatsApp: расскажем условия на 3 или 5 месяцев.</p></details>
     </div>
   </div>
 </section>
@@ -788,8 +845,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
   <div class="wrap form-grid">
     <div class="reveal">
       <span class="tag"><span class="dot"></span>Запись открыта</span>
-      <h2 style="margin-top:18px">Займите место во втором потоке</h2>
-      <p class="sub">Оставьте имя и телефон: мы свяжемся с вами и расскажем подробности. Или напишите нам сами:</p>
+      <h2 style="margin-top:18px">Через 20 дней вы будете делать то, за что другим платят</h2>
+      <p class="sub">Оставьте заявку, и мы забронируем вам место во втором потоке. Остались вопросы? Напишите нам:</p>
       <div class="contacts-mini">
         <a class="btn btn-wa" href="https://wa.me/79640656713" target="_blank" rel="noopener">WhatsApp Ильяс</a>
         <a class="btn btn-wa" href="https://wa.me/79284840303" target="_blank" rel="noopener">WhatsApp Мялхаьзни</a>
@@ -808,13 +865,13 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
         </label>
         <input name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px">
         <p class="err" id="formErr">Пожалуйста, укажите имя и телефон.</p>
-        <button class="btn btn-main" type="submit" id="formBtn">Оставить заявку</button>
+        <button class="btn btn-main" type="submit" id="formBtn">Забронировать место</button>
         <p class="small">Нажимая кнопку, вы соглашаетесь на обработку персональных данных для связи с вами.</p>
       </div>
       <div id="formDone" style="display:none;text-align:center">
         <div style="font-size:48px">✅</div>
         <h3 style="margin:10px 0">Заявка отправлена!</h3>
-        <p style="color:var(--muted);margin-bottom:20px">Мы скоро свяжемся с вами. А пока вступайте в нашу группу: там новости курса и полезные материалы.</p>
+        <p style="color:var(--muted);margin-bottom:20px">Скоро свяжемся с вами. А пока вступайте в нашу группу.</p>
         <a class="btn btn-tg" style="width:100%" href="https://t.me/teoriyazaprosa" target="_blank" rel="noopener">Вступить в группу в Telegram</a>
       </div>
     </form>
@@ -833,7 +890,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
   </div>
 </footer>
 
-<div class="sticky" id="sticky"><a href="#signup" class="btn btn-main">Записаться на курс</a></div>
+<div class="sticky" id="sticky"><a href="#signup" class="btn btn-main">Хочу на курс</a></div>
 
 <div class="lb" id="lb" role="dialog" aria-modal="true">
   <button class="lb-x" aria-label="Закрыть">×</button>
