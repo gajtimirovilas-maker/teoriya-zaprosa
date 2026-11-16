@@ -184,6 +184,15 @@ section[id],#stage2{scroll-margin-top:80px}
 .team li{display:flex;gap:12px;align-items:flex-start}
 .team li::before{content:"✓";flex:none;width:26px;height:26px;border-radius:8px;background:rgba(74,222,128,.15);color:var(--ok);display:grid;place-items:center;font-weight:800;font-size:14px;margin-top:2px}
 .contacts-mini{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.bio{margin-top:22px;background:linear-gradient(150deg,rgba(139,92,246,.18),rgba(34,211,238,.06)),var(--card);border:1px solid rgba(139,92,246,.4);border-radius:var(--r);padding:24px;display:grid;gap:14px}
+.bio-name{font-family:Unbounded,sans-serif;font-size:20px;font-weight:700}
+.bio-name span{display:block;font-family:Manrope,sans-serif;font-size:13.5px;font-weight:600;color:var(--accent2);margin-top:4px;text-transform:uppercase;letter-spacing:.05em}
+.bio>p:not(.bio-name){color:var(--muted);font-size:15.5px}
+.bio-facts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.bio-facts div{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:14px;padding:12px}
+.bio-facts b{display:block;font-family:Unbounded,sans-serif;font-size:15px;color:var(--text)}
+.bio-facts span{display:block;font-size:12.5px;color:var(--muted);line-height:1.35;margin-top:3px}
+.bio .bio-q{border-left:3px solid var(--accent);padding-left:14px;color:var(--text)!important;font-weight:600}
 
 /* reviews */
 .rev-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:36px}
@@ -315,6 +324,11 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
   .team-photos .t1{grid-row:auto}
   .team-photos img{aspect-ratio:3/4;border-radius:12px}
   .contacts-mini .btn{flex:1 1 100%}
+  .bio{padding:18px}
+  .bio-name{font-size:18px}
+  .bio-facts{grid-template-columns:1fr;gap:8px}
+  .bio-facts div{display:flex;align-items:baseline;gap:10px;padding:10px 12px}
+  .bio-facts b{flex:none;min-width:96px}
   .rev-grid,.get-grid{margin-top:22px;gap:12px}
   .rev,.get{padding:20px}
   .price{margin-top:22px;gap:14px}
@@ -657,6 +671,16 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
     <div class="reveal">
       <h2>Преподаватели</h2>
       <p class="sub">Ильяс и Мялхаьзни — авторы курса «Теория запроса». Ведут уроки сами, проверяют домашние задания и отвечают на вопросы учеников.</p>
+      <div class="bio">
+        <p class="bio-name">Ильяс <span>молодой учёный · преподаватель университета · педагог</span></p>
+        <p>Ждал появления нейросетей два года, а когда они появились, начал работать с ними с первого дня. Изучал, как устроены нейросети, по научным источникам, а не по роликам из интернета. Уже через месяц обучал работе с ИИ преподавателей. С тех пор сделал с помощью ИИ много реальных проектов.</p>
+        <div class="bio-facts">
+          <div><b>с 1-го дня</b><span>работает с нейросетями</span></div>
+          <div><b>через месяц</b><span>уже обучал преподавателей</span></div>
+          <div><b>наука</b><span>понимает, как ИИ устроен внутри</span></div>
+        </div>
+        <p class="bio-q">Преподаватель университета и педагог: знает не только как работает ИИ, но и как объяснить это так, чтобы понял каждый.</p>
+      </div>
       <ul>
         <li>На связи с учениками, как пишут в отзывах, «двадцать четыре часа в сутки, семь дней в неделю»</li>
         <li>Объясняют простым языком: курс проходят даже с телефона, без компьютера</li>
