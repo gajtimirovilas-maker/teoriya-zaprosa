@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#151918">
+  <title>Шашки с ботом</title>
+  <style>
+    :root{--bg:#111514;--panel:#1b211f;--panel2:#242c29;--text:#f4f2e9;--muted:#aeb8b2;--accent:#e8b85e;--light:#ead9b5;--dark:#547160;--danger:#e67b72;--ok:#70c49a}
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    body{margin:0;min-height:100vh;min-height:100dvh;background:radial-gradient(circle at 50% -10%,#33433d 0,#171d1b 42%,var(--bg) 100%);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;padding:max(18px,env(safe-area-inset-top)) 16px max(22px,env(safe-area-inset-bottom));display:flex;justify-content:center}
+    .app{width:min(100%,1000px)}
+    header{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:0 auto 16px;max-width:920px}
+    h1{font-size:clamp(26px,5vw,42px);margin:0;letter-spacing:-.04em}.subtitle{color:var(--muted);margin-top:5px;font-size:14px}
+    .layout{display:grid;grid-template-columns:minmax(280px,620px) minmax(230px,280px);gap:18px;align-items:start;justify-content:center}
+    .game-card,.side{background:rgba(27,33,31,.92);border:1px solid rgba(255,255,255,.08);border-radius:22px;box-shadow:0 24px 70px rgba(0,0,0,.28)}
+    .game-card{padding:14px}.side{padding:18px}
+    .statusbar{min-height:50px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 4px 12px}
+    #status{font-weight:750;font-size:16px}.turn-dot{width:12px;height:12px;border-radius:50%;background:#f5efe2;box-shadow:0 0 0 3px rgba(255,255,255,.12);flex:0 0 auto}.thinking{animation:pulse 1s infinite alternate}@keyframes pulse{to{opacity:.35}}
+    .board{width:100%;aspect-ratio:1;display:grid;grid-template-columns:repeat(8,1fr);overflow:hidden;border-radius:12px;border:5px solid #c89c59;box-shadow:inset 0 0 0 1px rgba(0,0,0,.45),0 12px 28px rgba(0,0,0,.3);touch-action:manipulation}
+    .cell{border:0;padding:0;position:relative;display:grid;place-items:center;background:var(--light);cursor:default}.cell.dark{background:var(--dark);cursor:pointer}.cell.dark::after{content:"";position:absolute;inset:8%;border-radius:50%;border:3px solid transparent;pointer-events:none}.cell.selected::after{border-color:var(--accent)}.cell.target::after{inset:35%;background:rgba(232,184,94,.9);box-shadow:0 0 0 5px rgba(17,21,20,.16)}.cell.capture-target::after{inset:13%;border-color:var(--accent);background:rgba(232,184,94,.18)}
+    .piece{width:76%;height:76%;border-radius:50%;position:relative;z-index:1;box-shadow:inset 0 -6px 0 rgba(0,0,0,.18),inset 0 5px 0 rgba(255,255,255,.28),0 4px 7px rgba(0,0,0,.35);border:2px solid rgba(0,0,0,.25);transition:transform .12s}.dark:hover .piece{transform:translateY(-1px)}
+    .piece.white{background:linear-gradient(145deg,#fffdf6,#d8d0bd)}.piece.black{background:linear-gradient(145deg,#414a48,#151a19);border-color:#0c0f0e}.piece.king::after{content:"♛";position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(18px,5vw,36px);color:var(--accent);text-shadow:0 1px 2px #000}.piece.white.king::after{color:#8d5d10;text-shadow:none}
+    .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0 18px}.stat{background:var(--panel2);padding:13px;border-radius:14px}.stat b{display:block;font-size:26px}.stat span{color:var(--muted);font-size:13px}.stat.wins b{color:var(--ok)}.stat.losses b{color:var(--danger)}
+    h2{font-size:16px;margin:0 0 10px}.history{list-style:none;margin:0;padding:0;display:grid;gap:7px;max-height:245px;overflow:auto}.history li{display:flex;justify-content:space-between;gap:8px;padding:9px 10px;background:var(--panel2);border-radius:10px;font-size:13px}.history small{color:var(--muted)}.empty{color:var(--muted);font-size:13px;padding:4px 0 12px}
+    .buttons{display:grid;gap:9px;margin-top:18px}.btn{border:0;border-radius:12px;padding:12px 14px;font:inherit;font-weight:750;cursor:pointer;background:var(--accent);color:#2a200f}.btn.secondary{background:#303a37;color:var(--text)}.btn:active{transform:translateY(1px)}
+    .help{margin-top:16px;color:var(--muted);font-size:12px;line-height:1.45}.help summary{cursor:pointer;color:var(--text);font-weight:700;margin-bottom:7px}
+    .toast{position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translate(-50%,20px);opacity:0;background:#f4f2e9;color:#17201c;padding:10px 15px;border-radius:99px;font-weight:700;font-size:14px;pointer-events:none;transition:.2s;z-index:10;box-shadow:0 8px 30px #0008}.toast.show{opacity:1;transform:translate(-50%,0)}
+    @media(max-width:750px){header{align-items:start}.layout{grid-template-columns:1fr}.side{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}.stats,.buttons,.help{grid-column:1/-1}.history{max-height:155px}.game-card{padding:10px;border-radius:17px}.statusbar{padding-inline:3px}.board{border-width:4px}}
+    @media(max-width:430px){body{padding-left:8px;padding-right:8px}.subtitle{font-size:12px}.side{grid-template-columns:1fr}.stats,.buttons,.help{grid-column:auto}.piece{width:78%;height:78%}}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header><div><h1>Шашки с ботом</h1><div class="subtitle">Вы играете белыми · лёгкий уровень · работает офлайн</div></div></header>
+    <section class="layout">
+      <div class="game-card">
+        <div class="statusbar"><span id="status">Ваш ход</span><span id="turnDot" class="turn-dot" aria-hidden="true"></span></div>
+        <div id="board" class="board" role="grid" aria-label="Доска для игры в шашки"></div>
+      </div>
+      <aside class="side">
+        <h2>Ваши результаты</h2>
+        <div class="stats">
+          <div class="stat wins"><b id="wins">0</b><span>побед</span></div>
+          <div class="stat losses"><b id="losses">0</b><span>поражений</span></div>
+        </div>
+        <h2>Последние игры</h2>
+        <div id="emptyHistory" class="empty">История пока пуста</div>
+        <ul id="history" class="history"></ul>
+        <div class="buttons">
+          <button id="newGame" class="btn">Новая игра</button>
+          <button id="resetStats" class="btn secondary">Очистить историю</button>
+        </div>
+        <details class="help"><summary>Как играть</summary>Нажмите на свою белую шашку, затем на подсвеченную клетку. Простая шашка ходит вперёд по диагонали, а бить может в обе стороны. Если взятие возможно, оно обязательно. Дойдя до последней линии, шашка становится дамкой.</details>
+      </aside>
+    </section>
+  </main>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script>
+  (()=>{
+    'use strict';
+    const WHITE=1, BLACK=-1, MAN=1, KING=2, SIZE=8;
+    const STORE='offlineCheckersStatsV1';
+    const boardEl=document.getElementById('board'), statusEl=document.getElementById('status'), dot=document.getElementById('turnDot');
+    let board, turn, selected=null, allowed=[], locked=null, ended=false, botBusy=false, quietPly=0, toastTimer;
+
+    const inside=(r,c)=>r>=0&&r<SIZE&&c>=0&&c<SIZE;
+    const side=p=>Math.sign(p);
+    const isKing=p=>Math.abs(p)===KING;
+    const freshBoard=()=>{
+      const b=Array.from({length:SIZE},()=>Array(SIZE).fill(0));
+      for(let r=0;r<3;r++)for(let c=0;c<SIZE;c++)if((r+c)%2)b[r][c]=BLACK*MAN;
+      for(let r=5;r<8;r++)for(let c=0;c<SIZE;c++)if((r+c)%2)b[r][c]=WHITE*MAN;
+      return b;
+    };
+    function stats(){try{return JSON.parse(localStorage.getItem(STORE))||{wins:0,losses:0,draws:0,history:[]}}catch{return{wins:0,losses:0,draws:0,history:[]}}}
+    function saveStats(s){localStorage.setItem(STORE,JSON.stringify(s));renderStats()}
+    function renderStats(){const s=stats();document.getElementById('wins').textContent=s.wins||0;document.getElementById('losses').textContent=s.losses||0;const list=document.getElementById('history');list.innerHTML='';document.getElementById('emptyHistory').hidden=!!s.history?.length;(s.history||[]).slice(0,12).forEach(x=>{const li=document.createElement('li');const a=document.createElement('span');a.textContent=x.result;const d=document.createElement('small');d.textContent=x.date;li.append(a,d);list.append(li)})}
+    function record(result){const s=stats();if(result==='Победа')s.wins=(s.wins||0)+1;else if(result==='Поражение')s.losses=(s.losses||0)+1;else s.draws=(s.draws||0)+1;s.history=s.history||[];s.history.unshift({result,date:new Date().toLocaleDateString('ru-RU',{day:'2-digit',month:'2-digit',year:'2-digit'})});s.history=s.history.slice(0,30);saveStats(s)}
+    function notify(msg){const e=document.getElementById('toast');e.textContent=msg;e.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>e.classList.remove('show'),1700)}
+
+    function capturesFor(r,c,b=board){
+      const p=b[r][c];if(!p)return[];const out=[], dirs=[[-1,-1],[-1,1],[1,-1],[1,1]];
+      if(!isKing(p)){
+        for(const [dr,dc] of dirs){const mr=r+dr,mc=c+dc,tr=r+2*dr,tc=c+2*dc;if(inside(tr,tc)&&b[tr][tc]===0&&b[mr][mc]&&side(b[mr][mc])!==side(p))out.push({fr:r,fc:c,tr,tc,cr:mr,cc:mc,capture:true})}
+      }else{
+        for(const [dr,dc] of dirs){let nr=r+dr,nc=c+dc,enemy=null;while(inside(nr,nc)){const q=b[nr][nc];if(q){if(side(q)===side(p)||enemy)break;enemy=[nr,nc]}else if(enemy)out.push({fr:r,fc:c,tr:nr,tc:nc,cr:enemy[0],cc:enemy[1],capture:true});nr+=dr;nc+=dc}}
+      }
+      return out;
+    }
+    function simpleFor(r,c,b=board){
+      const p=b[r][c],out=[];if(!p)return out;
+      if(!isKing(p)){const dr=side(p)===WHITE?-1:1;for(const dc of [-1,1]){const tr=r+dr,tc=c+dc;if(inside(tr,tc)&&b[tr][tc]===0)out.push({fr:r,fc:c,tr,tc,capture:false})}}
+      else for(const [dr,dc] of [[-1,-1],[-1,1],[1,-1],[1,1]]){let tr=r+dr,tc=c+dc;while(inside(tr,tc)&&b[tr][tc]===0){out.push({fr:r,fc:c,tr,tc,capture:false});tr+=dr;tc+=dc}}
+      return out;
+    }
+    function allMoves(player,b=board,forcePiece=null){
+      if(forcePiece)return capturesFor(forcePiece.r,forcePiece.c,b);
+      let caps=[],simples=[];for(let r=0;r<SIZE;r++)for(let c=0;c<SIZE;c++)if(side(b[r][c])===player){caps.push(...capturesFor(r,c,b));simples.push(...simpleFor(r,c,b))}
+      return caps.length?caps:simples;
+    }
+    function applyMove(m){let p=board[m.fr][m.fc];board[m.fr][m.fc]=0;board[m.tr][m.tc]=p;if(m.capture)board[m.cr][m.cc]=0;if((side(p)===WHITE&&m.tr===0)||(side(p)===BLACK&&m.tr===7))board[m.tr][m.tc]=side(p)*KING;quietPly=m.capture?0:quietPly+1}
+    function setStatus(text,thinking=false){statusEl.textContent=text;dot.classList.toggle('thinking',thinking);dot.style.background=turn===WHITE?'#f5efe2':'#222b28'}
+    function render(){
+      boardEl.innerHTML='';const targets=new Map(allowed.map(m=>[m.tr+','+m.tc,m]));
+      for(let r=0;r<SIZE;r++)for(let c=0;c<SIZE;c++){
+        const cell=document.createElement('button');cell.type='button';cell.className='cell '+(((r+c)%2)?'dark':'light');cell.setAttribute('role','gridcell');cell.dataset.r=r;cell.dataset.c=c;
+        if(selected&&selected.r===r&&selected.c===c)cell.classList.add('selected');const move=targets.get(r+','+c);if(move)cell.classList.add(move.capture?'capture-target':'target');
+        const p=board[r][c];if(p){const piece=document.createElement('span');piece.className='piece '+(side(p)===WHITE?'white':'black')+(isKing(p)?' king':'');cell.append(piece);cell.setAttribute('aria-label',(side(p)===WHITE?'Белая ':'Чёрная ')+(isKing(p)?'дамка':'шашка'))}else cell.setAttribute('aria-label','Пустая клетка');
+        cell.addEventListener('click',onCell);boardEl.append(cell)
+      }
+    }
+    function onCell(e){
+      if(ended||botBusy||turn!==WHITE)return;const r=+e.currentTarget.dataset.r,c=+e.currentTarget.dataset.c;
+      const chosen=allowed.find(m=>m.tr===r&&m.tc===c);if(chosen){playerMove(chosen);return}
+      if(side(board[r][c])!==WHITE){notify('Выберите белую шашку');return}
+      if(locked&&(locked.r!==r||locked.c!==c)){notify('Нужно продолжить взятие этой шашкой');return}
+      const legal=allMoves(WHITE,board,locked);const moves=legal.filter(m=>m.fr===r&&m.fc===c);if(!moves.length){notify(legal.some(m=>m.capture)?'Сейчас нужно взять шашку соперника':'У этой шашки нет хода');return}
+      selected={r,c};allowed=moves;render()
+    }
+    function playerMove(m){
+      applyMove(m);selected={r:m.tr,c:m.tc};allowed=[];render();
+      const more=m.capture?capturesFor(m.tr,m.tc):[];
+      if(more.length){locked={r:m.tr,c:m.tc};allowed=more;setStatus('Продолжите взятие');render();return}
+      locked=null;selected=null;finishTurn(BLACK)
+    }
+    function finishTurn(next){
+      turn=next;render();if(checkEnd())return;
+      if(turn===BLACK){botBusy=true;setStatus('Бот думает…',true);setTimeout(botStep,420)}else setStatus('Ваш ход')
+    }
+    function botChoice(moves){
+      let scored=moves.map(m=>{let score=Math.random()*4;if(m.capture)score+=7;const victim=m.capture?Math.abs(board[m.cr][m.cc]):0;if(victim===KING)score+=4;if(m.tr===7&&Math.abs(board[m.fr][m.fc])===MAN)score+=3;score+=Math.min(m.tc,7-m.tc)*.15;return{m,score}});scored.sort((a,b)=>b.score-a.score);return scored[Math.floor(Math.random()*Math.min(3,scored.length))].m
+    }
+    function botStep(force=null){
+      if(ended)return;const moves=allMoves(BLACK,board,force);if(!moves.length){botBusy=false;endGame('Победа');return}
+      const m=botChoice(moves);applyMove(m);render();const more=m.capture?capturesFor(m.tr,m.tc):[];
+      if(more.length){setStatus('Бот продолжает взятие…',true);setTimeout(()=>botStep({r:m.tr,c:m.tc}),320);return}
+      botBusy=false;finishTurn(WHITE)
+    }
+    function checkEnd(){
+      const whitePieces=board.flat().filter(p=>side(p)===WHITE).length,blackPieces=board.flat().filter(p=>side(p)===BLACK).length;
+      if(!whitePieces||!allMoves(WHITE).length){endGame('Поражение');return true}if(!blackPieces||!allMoves(BLACK).length){endGame('Победа');return true}if(quietPly>=80){endGame('Ничья');return true}return false
+    }
+    function endGame(result){ended=true;botBusy=false;selected=null;allowed=[];render();record(result);setStatus(result==='Победа'?'Вы победили!':result==='Поражение'?'Бот победил':'Ничья');notify(result+' — результат сохранён')}
+    function start(){board=freshBoard();turn=WHITE;selected=null;allowed=[];locked=null;ended=false;botBusy=false;quietPly=0;setStatus('Ваш ход');render()}
+    document.getElementById('newGame').addEventListener('click',()=>{if(!ended&&!confirm('Начать новую игру? Текущая партия не попадёт в статистику.'))return;start()});
+    document.getElementById('resetStats').addEventListener('click',()=>{if(confirm('Удалить всю историю побед и поражений на этом устройстве?')){localStorage.removeItem(STORE);renderStats();notify('История очищена')}});
+    renderStats();start();
+  })();
+  </script>
+</body>
+</html>

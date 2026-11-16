@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Шахматы</title>
+<style>
+  :root{
+    --bg:#0f172a;
+    --panel:#111827;
+    --panel2:#1f2937;
+    --text:#f8fafc;
+    --muted:#cbd5e1;
+    --light:#f0d9b5;
+    --dark:#b58863;
+    --sel:#fde047;
+    --move:#22c55e;
+    --capture:#ef4444;
+    --check:#dc2626;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    min-height:100vh;
+    font-family:Inter,Segoe UI,Arial,sans-serif;
+    background:radial-gradient(circle at top,#1e293b 0,#0f172a 55%,#020617 100%);
+    color:var(--text);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+  .app{
+    width:min(1180px,100%);
+    display:grid;
+    grid-template-columns:minmax(320px,720px) 320px;
+    gap:22px;
+  }
+  .left,.right{
+    background:rgba(17,24,39,.92);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:22px;
+    box-shadow:0 20px 60px rgba(0,0,0,.35);
+  }
+  .left{padding:18px}
+  .right{padding:20px;display:flex;flex-direction:column;gap:16px}
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:14px;
+  }
+  h1{font-size:24px;margin:0}
+  .status{
+    font-size:14px;
+    color:var(--muted);
+    text-align:right;
+  }
+  .board-wrap{
+    position:relative;
+    width:100%;
+    aspect-ratio:1/1;
+    border-radius:16px;
+    overflow:hidden;
+    border:6px solid #334155;
+    background:#334155;
+  }
+  .board{
+    display:grid;
+    grid-template-columns:repeat(8,1fr);
+    grid-template-rows:repeat(8,1fr);
+    width:100%;
+    height:100%;
+  }
+  .sq{
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:clamp(32px,6.3vw,64px);
+    cursor:pointer;
+    user-select:none;
+  }
+  .sq.light{background:var(--light)}
+  .sq.dark{background:var(--dark)}
+  .sq.selected{box-shadow:inset 0 0 0 6px rgba(253,224,71,.92)}
+  .sq.check{box-shadow:inset 0 0 0 7px rgba(220,38,38,.95)}
+  .sq.move::after{
+    content:"";
+    width:24%;
+    aspect-ratio:1;
+    border-radius:50%;
+    background:rgba(34,197,94,.75);
+    position:absolute;
+  }
+  .sq.capture::after{
+    content:"";
+    position:absolute;
+    inset:8%;
+    border:5px solid rgba(239,68,68,.85);
+    border-radius:50%;
+  }
+  .piece{
+    position:relative;
+    z-index:2;
+    line-height:1;
+    filter:drop-shadow(0 2px 1px rgba(0,0,0,.18));
+  }
+  .coord{
+    position:absolute;
+    font-size:10px;
+    font-weight:700;
+    opacity:.72;
+    pointer-events:none;
+  }
+  .coord.file{right:4px;bottom:2px}
+  .coord.rank{left:4px;top:2px}
+
+  .badge{
+    background:#0b1220;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:14px;
+    padding:12px 14px;
+  }
+  .badge strong{display:block;font-size:15px;margin-bottom:4px}
+  .badge span{color:var(--muted);font-size:13px}
+  .buttons{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  button{
+    border:0;
+    border-radius:12px;
+    padding:11px 12px;
+    font-weight:700;
+    cursor:pointer;
+    background:#2563eb;
+    color:white;
+  }
+  button.secondary{background:#334155}
+  button.danger{background:#7f1d1d}
+  button:hover{filter:brightness(1.08)}
+  .history-title{font-size:15px;font-weight:800}
+  .history{
+    background:#0b1220;
+    border-radius:14px;
+    min-height:180px;
+    max-height:360px;
+    overflow:auto;
+    padding:12px;
+    border:1px solid rgba(255,255,255,.06);
+    font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+    font-size:13px;
+  }
+  .move-row{
+    display:grid;
+    grid-template-columns:36px 1fr 1fr;
+    gap:8px;
+    padding:5px 2px;
+    color:#e5e7eb;
+  }
+  .move-row:nth-child(odd){background:rgba(255,255,255,.025)}
+  .hint{
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.45;
+  }
+  .overlay{
+    position:absolute;
+    inset:0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    background:rgba(2,6,23,.72);
+    z-index:20;
+  }
+  .overlay.show{display:flex}
+  .modal{
+    width:min(360px,86%);
+    background:#111827;
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:18px;
+    padding:18px;
+    text-align:center;
+    box-shadow:0 20px 70px rgba(0,0,0,.5);
+  }
+  .promo{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin-top:14px;
+  }
+  .promo button{
+    font-size:36px;
+    padding:10px 14px;
+    background:#1f2937;
+  }
+  @media(max-width:900px){
+    .app{grid-template-columns:1fr}
+    .right{order:2}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <section class="left">
+    <div class="topbar">
+      <h1>♟ Шахматы</h1>
+      <div class="status" id="status">Ход белых</div>
+    </div>
+    <div class="board-wrap">
+      <div class="board" id="board"></div>
+      <div class="overlay" id="promoOverlay">
+        <div class="modal">
+          <h3 style="margin:0 0 6px">Превращение пешки</h3>
+          <div style="color:#cbd5e1;font-size:13px">Выберите фигуру</div>
+          <div class="promo" id="promoButtons"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <aside class="right">
+    <div class="badge">
+      <strong id="turnTitle">Белые ходят</strong>
+      <span id="gameInfo">Выберите фигуру на доске</span>
+    </div>
+
+    <div class="buttons">
+      <button id="newBtn">Новая игра</button>
+      <button class="secondary" id="undoBtn">Отменить ход</button>
+      <button class="secondary" id="flipBtn">Перевернуть доску</button>
+      <button class="danger" id="clearHistBtn">Очистить историю</button>
+    </div>
+
+    <div class="history-title">История ходов</div>
+    <div class="history" id="history"></div>
+
+    <div class="hint">
+      Игра рассчитана на двух игроков за одним компьютером. Поддерживаются рокировка,
+      взятие на проходе, превращение пешки, шах и мат.
+    </div>
+  </aside>
+</div>
+
+<script>
+const PIECES = {
+  wK:'♔', wQ:'♕', wR:'♖', wB:'♗', wN:'♘', wP:'♙',
+  bK:'♚', bQ:'♛', bR:'♜', bB:'♝', bN:'♞', bP:'♟'
+};
+
+const boardEl = document.getElementById('board');
+const statusEl = document.getElementById('status');
+const turnTitle = document.getElementById('turnTitle');
+const gameInfo = document.getElementById('gameInfo');
+const historyEl = document.getElementById('history');
+const promoOverlay = document.getElementById('promoOverlay');
+const promoButtons = document.getElementById('promoButtons');
+
+let state, selected=null, legalMoves=[], flipped=false, history=[], snapshots=[], pendingPromotion=null;
+
+function initialBoard(){
+  return [
+    ['bR','bN','bB','bQ','bK','bB','bN','bR'],
+    ['bP','bP','bP','bP','bP','bP','bP','bP'],
+    [null,null,null,null,null,null,null,null],
+    [null,null,null,null,null,null,null,null],
+    [null,null,null,null,null,null,null,null],
+    [null,null,null,null,null,null,null,null],
+    ['wP','wP','wP','wP','wP','wP','wP','wP'],
+    ['wR','wN','wB','wQ','wK','wB','wN','wR']
+  ];
+}
+
+function resetGame(){
+  state = {
+    board: initialBoard(),
+    turn:'w',
+    castle:{wK:true,wQ:true,bK:true,bQ:true},
+    ep:null,
+    gameOver:false
+  };
+  selected=null; legalMoves=[]; history=[]; snapshots=[]; pendingPromotion=null;
+  render();
+}
+
+function cloneState(s){ return JSON.parse(JSON.stringify(s)); }
+function inB(r,c){ return r>=0&&r<8&&c>=0&&c<8; }
+function colorOf(p){ return p ? p[0] : null; }
+function typeOf(p){ return p ? p[1] : null; }
+function enemy(c){ return c==='w'?'b':'w'; }
+
+function squareName(r,c){
+  return 'abcdefgh'[c] + (8-r);
+}
+
+function render(){
+  boardEl.innerHTML='';
+  const rows = flipped ? [...Array(8).keys()].reverse() : [...Array(8).keys()];
+  const cols = flipped ? [...Array(8).keys()].reverse() : [...Array(8).keys()];
+
+  const checkKing = findKing(state.turn);
+  const isChk = checkKing ? isSquareAttacked(checkKing.r, checkKing.c, enemy(state.turn), state.board) : false;
+
+  for(const r of rows){
+    for(const c of cols){
+      const sq=document.createElement('div');
+      sq.className='sq '+(((r+c)%2===0)?'light':'dark');
+      sq.dataset.r=r; sq.dataset.c=c;
+
+      if(selected && selected.r===r && selected.c===c) sq.classList.add('selected');
+      const lm=legalMoves.find(m=>m.r===r&&m.c===c);
+      if(lm) sq.classList.add(state.board[r][c] || lm.ep ? 'capture':'move');
+      if(isChk && checkKing.r===r&&checkKing.c===c) sq.classList.add('check');
+
+      const p=state.board[r][c];
+      if(p){
+        const sp=document.createElement('span');
+        sp.className='piece';
+        sp.textContent=PIECES[p];
+        sq.appendChild(sp);
+      }
+      if((flipped?c===0:c===7)){
+        const f=document.createElement('span');
+        f.className='coord rank';
+        f.textContent=8-r;
+        sq.appendChild(f);
+      }
+      if((flipped?r===0:r===7)){
+        const f=document.createElement('span');
+        f.className='coord file';
+        f.textContent='abcdefgh'[c];
+        sq.appendChild(f);
+      }
+
+      sq.addEventListener('click',()=>clickSquare(r,c));
+      boardEl.appendChild(sq);
+    }
+  }
+
+  if(state.gameOver){
+    turnTitle.textContent='Игра окончена';
+  } else {
+    turnTitle.textContent=state.turn==='w'?'Белые ходят':'Чёрные ходят';
+  }
+  statusEl.textContent = state.gameOver ? 'Игра окончена' : (state.turn==='w'?'Ход белых':'Ход чёрных');
+  renderHistory();
+}
+
+function clickSquare(r,c){
+  if(state.gameOver || pendingPromotion) return;
+  const p=state.board[r][c];
+
+  if(selected){
+    const move=legalMoves.find(m=>m.r===r&&m.c===c);
+    if(move){
+      doMove(selected.r,selected.c,r,c,move);
+      return;
+    }
+    if(p && colorOf(p)===state.turn){
+      selectSquare(r,c);
+      return;
+    }
+    selected=null; legalMoves=[]; render();
+    return;
+  }
+
+  if(p && colorOf(p)===state.turn) selectSquare(r,c);
+}
+
+function selectSquare(r,c){
+  selected={r,c};
+  legalMoves=getLegalMoves(r,c);
+  gameInfo.textContent=`${PIECES[state.board[r][c]]} ${squareName(r,c)} — доступно ходов: ${legalMoves.length}`;
+  render();
+}
+
+function getLegalMoves(r,c){
+  const pseudo=getPseudoMoves(r,c,state.board,state);
+  const piece=state.board[r][c];
+  const col=colorOf(piece);
+  return pseudo.filter(m=>{
+    const test=cloneState(state);
+    applyMoveToState(test,r,c,m.r,m.c,m,false);
+    const k=findKing(col,test.board);
+    return k && !isSquareAttacked(k.r,k.c,enemy(col),test.board);
+  });
+}
+
+function getPseudoMoves(r,c,b,s){
+  const p=b[r][c]; if(!p) return [];
+  const col=colorOf(p), t=typeOf(p), out=[];
+
+  if(t==='P'){
+    const d=col==='w'?-1:1, start=col==='w'?6:1;
+    if(inB(r+d,c)&&!b[r+d][c]){
+      out.push({r:r+d,c});
+      if(r===start&&!b[r+2*d][c]) out.push({r:r+2*d,c,double:true});
+    }
+    for(const dc of [-1,1]){
+      const nr=r+d,nc=c+dc;
+      if(!inB(nr,nc)) continue;
+      if(b[nr][nc] && colorOf(b[nr][nc])!==col) out.push({r:nr,c:nc});
+      if(s.ep && s.ep.r===nr && s.ep.c===nc) out.push({r:nr,c:nc,ep:true});
+    }
+  }
+
+  if(t==='N'){
+    for(const [dr,dc] of [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]]){
+      const nr=r+dr,nc=c+dc;
+      if(inB(nr,nc)&&(!b[nr][nc]||colorOf(b[nr][nc])!==col)) out.push({r:nr,c:nc});
+    }
+  }
+
+  if(['B','R','Q'].includes(t)){
+    let dirs=[];
+    if(['B','Q'].includes(t)) dirs.push([-1,-1],[-1,1],[1,-1],[1,1]);
+    if(['R','Q'].includes(t)) dirs.push([-1,0],[1,0],[0,-1],[0,1]);
+    for(const [dr,dc] of dirs){
+      let nr=r+dr,nc=c+dc;
+      while(inB(nr,nc)){
+        if(!b[nr][nc]) out.push({r:nr,c:nc});
+        else {
+          if(colorOf(b[nr][nc])!==col) out.push({r:nr,c:nc});
+          break;
+        }
+        nr+=dr; nc+=dc;
+      }
+    }
+  }
+
+  if(t==='K'){
+    for(let dr=-1;dr<=1;dr++) for(let dc=-1;dc<=1;dc++){
+      if(!dr&&!dc) continue;
+      const nr=r+dr,nc=c+dc;
+      if(inB(nr,nc)&&(!b[nr][nc]||colorOf(b[nr][nc])!==col)) out.push({r:nr,c:nc});
+    }
+    const home=col==='w'?7:0;
+    if(r===home&&c===4){
+      if(s.castle[col+'K'] && b[home][7]===col+'R' && !b[home][5]&&!b[home][6] &&
+         !isSquareAttacked(home,4,enemy(col),b) &&
+         !isSquareAttacked(home,5,enemy(col),b) &&
+         !isSquareAttacked(home,6,enemy(col),b)){
+        out.push({r:home,c:6,castle:'K'});
+      }
+      if(s.castle[col+'Q'] && b[home][0]===col+'R' && !b[home][1]&&!b[home][2]&&!b[home][3] &&
+         !isSquareAttacked(home,4,enemy(col),b) &&
+         !isSquareAttacked(home,3,enemy(col),b) &&
+         !isSquareAttacked(home,2,enemy(col),b)){
+        out.push({r:home,c:2,castle:'Q'});
+      }
+    }
+  }
+  return out;
+}
+
+function isSquareAttacked(r,c,by,b){
+  const d=by==='w'?-1:1;
+  const pr=r-d;
+  for(const dc of [-1,1]){
+    const pc=c-dc;
+    if(inB(pr,pc)&&b[pr][pc]===by+'P') return true;
+  }
+
+  for(const [dr,dc] of [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]]){
+    const nr=r+dr,nc=c+dc;
+    if(inB(nr,nc)&&b[nr][nc]===by+'N') return true;
+  }
+
+  for(const [dr,dc,types] of [
+    [-1,-1,['B','Q']],[-1,1,['B','Q']],[1,-1,['B','Q']],[1,1,['B','Q']],
+    [-1,0,['R','Q']],[1,0,['R','Q']],[0,-1,['R','Q']],[0,1,['R','Q']]
+  ]){
+    let nr=r+dr,nc=c+dc;
+    while(inB(nr,nc)){
+      if(b[nr][nc]){
+        if(colorOf(b[nr][nc])===by&&types.includes(typeOf(b[nr][nc]))) return true;
+        break;
+      }
+      nr+=dr; nc+=dc;
+    }
+  }
+
+  for(let dr=-1;dr<=1;dr++) for(let dc=-1;dc<=1;dc++){
+    if(!dr&&!dc) continue;
+    const nr=r+dr,nc=c+dc;
+    if(inB(nr,nc)&&b[nr][nc]===by+'K') return true;
+  }
+  return false;
+}
+
+function findKing(col,b=state.board){
+  for(let r=0;r<8;r++) for(let c=0;c<8;c++) if(b[r][c]===col+'K') return {r,c};
+  return null;
+}
+
+function doMove(fr,fc,tr,tc,meta){
+  snapshots.push({
+    state:cloneState(state),
+    history:JSON.parse(JSON.stringify(history))
+  });
+
+  const moving=state.board[fr][fc];
+  const captured=meta.ep ? state.board[fr][tc] : state.board[tr][tc];
+  const notationBase=buildNotation(fr,fc,tr,tc,moving,captured,meta);
+
+  applyMoveToState(state,fr,fc,tr,tc,meta,true);
+
+  selected=null; legalMoves=[];
+
+  if(typeOf(moving)==='P' && (tr===0||tr===7)){
+    pendingPromotion={r:tr,c:tc,color:colorOf(moving),notationBase};
+    showPromotion();
+    return;
+  }
+
+  finalizeMove(notationBase);
+}
+
+function applyMoveToState(s,fr,fc,tr,tc,meta,real){
+  const b=s.board;
+  const moving=b[fr][fc], col=colorOf(moving), t=typeOf(moving);
+
+  if(meta.ep){
+    b[fr][tc]=null;
+  }
+
+  b[tr][tc]=moving;
+  b[fr][fc]=null;
+
+  if(meta.castle){
+    if(meta.castle==='K'){
+      b[tr][5]=b[tr][7];
+      b[tr][7]=null;
+    } else {
+      b[tr][3]=b[tr][0];
+      b[tr][0]=null;
+    }
+  }
+
+  if(t==='K'){
+    s.castle[col+'K']=false;
+    s.castle[col+'Q']=false;
+  }
+  if(t==='R'){
+    if(col==='w'&&fr===7&&fc===0) s.castle.wQ=false;
+    if(col==='w'&&fr===7&&fc===7) s.castle.wK=false;
+    if(col==='b'&&fr===0&&fc===0) s.castle.bQ=false;
+    if(col==='b'&&fr===0&&fc===7) s.castle.bK=false;
+  }
+
+  // если ладью взяли на исходной клетке
+  if(tr===7&&tc===0) s.castle.wQ=false;
+  if(tr===7&&tc===7) s.castle.wK=false;
+  if(tr===0&&tc===0) s.castle.bQ=false;
+  if(tr===0&&tc===7) s.castle.bK=false;
+
+  s.ep=null;
+  if(t==='P' && Math.abs(tr-fr)===2){
+    s.ep={r:(fr+tr)/2,c:fc};
+  }
+
+  s.turn=enemy(s.turn);
+}
+
+function buildNotation(fr,fc,tr,tc,moving,captured,meta){
+  if(meta.castle==='K') return 'O-O';
+  if(meta.castle==='Q') return 'O-O-O';
+  const t=typeOf(moving);
+  const names={K:'Кр',Q:'Ф',R:'Л',B:'С',N:'К',P:''};
+  const cap=captured||meta.ep?'×':'–';
+  return `${names[t]}${squareName(fr,fc)}${cap}${squareName(tr,tc)}`;
+}
+
+function showPromotion(){
+  promoButtons.innerHTML='';
+  for(const t of ['Q','R','B','N']){
+    const btn=document.createElement('button');
+    btn.textContent=PIECES[pendingPromotion.color+t];
+    btn.onclick=()=>promote(t);
+    promoButtons.appendChild(btn);
+  }
+  promoOverlay.classList.add('show');
+}
+
+function promote(t){
+  const p=pendingPromotion;
+  state.board[p.r][p.c]=p.color+t;
+  promoOverlay.classList.remove('show');
+  const notation=p.notationBase+'='+({Q:'Ф',R:'Л',B:'С',N:'К'}[t]);
+  pendingPromotion=null;
+  finalizeMove(notation);
+}
+
+function finalizeMove(notation){
+  const justMoved=enemy(state.turn);
+  const king=findKing(state.turn);
+  const chk=king && isSquareAttacked(king.r,king.c,justMoved,state.board);
+  const has=hasAnyLegalMove(state.turn);
+
+  if(chk && !has){
+    notation+='#';
+    state.gameOver=true;
+    gameInfo.textContent=`Мат. Победили ${justMoved==='w'?'белые':'чёрные'}.`;
+  } else if(chk){
+    notation+='+';
+    gameInfo.textContent='Шах!';
+  } else if(!has){
+    state.gameOver=true;
+    gameInfo.textContent='Пат. Ничья.';
+  } else {
+    gameInfo.textContent='Выберите фигуру';
+  }
+
+  history.push(notation);
+  render();
+}
+
+function hasAnyLegalMove(col){
+  for(let r=0;r<8;r++) for(let c=0;c<8;c++){
+    if(colorOf(state.board[r][c])===col){
+      if(getLegalMoves(r,c).length) return true;
+    }
+  }
+  return false;
+}
+
+function renderHistory(){
+  historyEl.innerHTML='';
+  for(let i=0;i<history.length;i+=2){
+    const row=document.createElement('div');
+    row.className='move-row';
+    row.innerHTML=`<span>${Math.floor(i/2)+1}.</span><span>${history[i]||''}</span><span>${history[i+1]||''}</span>`;
+    historyEl.appendChild(row);
+  }
+  historyEl.scrollTop=historyEl.scrollHeight;
+}
+
+document.getElementById('newBtn').onclick=()=>resetGame();
+
+document.getElementById('undoBtn').onclick=()=>{
+  if(!snapshots.length || pendingPromotion) return;
+  const snap=snapshots.pop();
+  state=snap.state;
+  history=snap.history;
+  selected=null; legalMoves=[]; pendingPromotion=null;
+  gameInfo.textContent='Последний ход отменён';
+  render();
+};
+
+document.getElementById('flipBtn').onclick=()=>{
+  flipped=!flipped;
+  render();
+};
+
+document.getElementById('clearHistBtn').onclick=()=>{
+  history=[];
+  renderHistory();
+};
+
+resetGame();
+</script>
+</body>
+</html>

@@ -1,0 +1,764 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Теория запроса — курс по нейросетям</title>
+<meta name="description" content="Курс «Теория запроса»: научитесь работать с ChatGPT, Claude, документами, изображениями, видео и автоматизацией и продавайте это как услугу. С нуля, с проверкой домашних заданий.">
+<meta property="og:title" content="Теория запроса — стань специалистом по ИИ">
+<meta property="og:description" content="Нейросети с нуля: тексты, документы, изображения, автоматизация, сайты и AI-видео. 2 поток, места ограничены.">
+<meta property="og:image" content="img/logo.jpg">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a0f; --bg2:#12121a; --card:#16161f; --line:#262633;
+  --text:#f2f2f7; --muted:#a0a0b4; --accent:#8b5cf6; --accent2:#22d3ee;
+  --money:#facc15; --ok:#4ade80;
+  --grad:linear-gradient(135deg,#8b5cf6 0%,#6366f1 45%,#22d3ee 100%);
+  --r:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:Manrope,system-ui,sans-serif;font-size:17px;line-height:1.6;overflow-x:hidden}
+img,video{max-width:100%;display:block}
+a{color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+h1,h2,h3{font-family:Unbounded,Manrope,sans-serif;line-height:1.15;letter-spacing:-.01em}
+h2{font-size:clamp(28px,4.2vw,46px);margin-bottom:14px}
+h3{font-size:20px}
+.sub{color:var(--muted);font-size:18px;max-width:720px}
+section{padding:90px 0}
+.tag{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border:1px solid var(--line);border-radius:99px;font-size:14px;color:var(--muted);background:rgba(255,255,255,.03)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 12px var(--ok);animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.35}}
+.grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:17px 30px;border-radius:14px;font-weight:700;font-size:17px;text-decoration:none;border:0;cursor:pointer;transition:transform .15s,box-shadow .2s;font-family:inherit}
+.btn-main{background:var(--grad);color:#fff;box-shadow:0 10px 40px -10px rgba(139,92,246,.7)}
+.btn-main:hover{transform:translateY(-2px);box-shadow:0 14px 50px -10px rgba(139,92,246,.9)}
+.btn-ghost{background:rgba(255,255,255,.06);color:var(--text);border:1px solid var(--line)}
+.btn-ghost:hover{background:rgba(255,255,255,.1)}
+.btn-wa{background:#25d366;color:#06301a}
+.btn-tg{background:#2aabee;color:#fff}
+
+/* header */
+header{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(10,10,15,.75);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.06)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:66px;gap:16px}
+.logo{font-family:Unbounded,sans-serif;font-weight:700;font-size:17px;text-decoration:none;white-space:nowrap;display:flex;align-items:center;gap:10px}
+.logo img{width:40px;height:40px;border-radius:10px}
+.logo span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+nav{display:flex;gap:26px}
+nav a{text-decoration:none;color:var(--muted);font-size:15px;font-weight:500}
+nav a:hover{color:var(--text)}
+header .btn{padding:11px 20px;font-size:15px}
+
+/* hero */
+.hero{padding:130px 0 70px;position:relative}
+.hero::before{content:"";position:absolute;inset:-200px -20% auto;height:700px;background:radial-gradient(closest-side,rgba(139,92,246,.28),transparent),radial-gradient(closest-side at 80% 40%,rgba(34,211,238,.18),transparent);pointer-events:none;z-index:-1}
+.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:50px;align-items:center}
+.hero h1{font-size:clamp(32px,5.2vw,62px);margin:22px 0 22px;text-transform:uppercase}
+.hero h1 .money{color:var(--money);white-space:nowrap}
+.hero .sub{margin-bottom:32px}
+.hero-btns{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:38px}
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.fact{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.fact b{display:block;font-family:Unbounded,sans-serif;font-size:20px}
+.fact span{font-size:13px;color:var(--muted);line-height:1.35;display:block}
+.collage{display:grid;grid-template-columns:1fr 1fr;gap:12px;transform:rotate(2deg)}
+.collage img{border-radius:18px;width:100%;height:100%;object-fit:cover;border:1px solid var(--line)}
+.collage .c1{grid-row:span 2;aspect-ratio:3/5}
+.collage .c2,.collage .c3{aspect-ratio:4/5}
+.collage-note{text-align:center;color:var(--muted);font-size:13px;margin-top:20px}
+
+/* marquee */
+.strip{border-block:1px solid var(--line);background:var(--bg2);overflow:hidden;padding:18px 0}
+.strip-in{display:flex;gap:46px;white-space:nowrap;animation:run 35s linear infinite;width:max-content}
+.strip span{font-family:Unbounded,sans-serif;font-size:18px;color:var(--muted)}
+.strip span::before{content:"✦";margin-right:46px;color:var(--accent)}
+@keyframes run{to{transform:translateX(-50%)}}
+
+/* about */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:40px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:30px}
+.box p+p{margin-top:12px}
+.box .big{font-size:22px;font-weight:700;margin-bottom:10px}
+.voice{background:linear-gradient(160deg,rgba(139,92,246,.18),rgba(34,211,238,.08)),var(--card)}
+.bubble{background:#1f1f2b;border-radius:16px 16px 16px 4px;padding:14px 18px;margin:16px 0;font-style:italic;position:relative}
+.bubble::before{content:"🎙 ";font-style:normal}
+.mini-table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
+.mini-table td,.mini-table th{border:1px solid var(--line);padding:6px 10px;text-align:left}
+.mini-table th{color:var(--muted);font-weight:600}
+.mini-table td:last-child{color:var(--ok);font-weight:700}
+
+/* program */
+.stage-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin:46px 0 20px}
+.stage-head h3{font-size:24px}
+.stage-head span{color:var(--muted)}
+.lessons{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.lesson{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px;display:flex;flex-direction:column;gap:12px;position:relative;transition:border-color .2s}
+.lesson:hover{border-color:#3a3a4d}
+.lesson .num{font-family:Unbounded,sans-serif;font-size:13px;color:var(--accent2);letter-spacing:.08em}
+.lesson p{color:var(--muted);font-size:15.5px}
+.lesson .hw{font-size:14.5px;color:var(--text);background:rgba(255,255,255,.04);border-radius:10px;padding:9px 12px}
+.lesson .hw b{color:var(--accent2)}
+.earn{margin-top:auto;display:flex;gap:12px;align-items:flex-start;background:rgba(250,204,21,.08);border:1px solid rgba(250,204,21,.28);border-radius:14px;padding:12px 14px}
+.earn .ico{font-size:22px;line-height:1.2}
+.earn small{display:block;color:var(--muted);font-size:12.5px;text-transform:uppercase;letter-spacing:.06em}
+.earn b{color:var(--money);font-size:16px;line-height:1.4;display:block}
+.lesson.key{grid-column:1/-1;border:1px solid rgba(250,204,21,.5);background:linear-gradient(140deg,rgba(250,204,21,.10),rgba(139,92,246,.10) 60%),var(--card)}
+.badge{position:absolute;top:-12px;right:20px;background:var(--money);color:#1a1400;font-weight:800;font-size:12.5px;padding:5px 12px;border-radius:99px;text-transform:uppercase;letter-spacing:.05em}
+.lesson.key h3{font-size:24px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips span{font-size:13.5px;padding:5px 11px;border-radius:99px;background:rgba(255,255,255,.06);border:1px solid var(--line)}
+.lesson.wide{grid-column:1/-1}
+
+/* 100k */
+.calc{margin-top:40px;display:grid;grid-template-columns:repeat(4,1fr) auto;gap:12px;align-items:stretch}
+.calc .it{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;font-size:14.5px;color:var(--muted)}
+.calc .it b{display:block;font-family:Unbounded,sans-serif;font-size:clamp(16px,1.6vw,20px);white-space:nowrap;color:var(--text);margin-bottom:6px}
+.calc .total{background:var(--grad);border-radius:16px;padding:18px 24px;display:flex;flex-direction:column;justify-content:center;color:#fff}
+.calc .total b{font-family:Unbounded,sans-serif;font-size:26px}
+.note{color:var(--muted);font-size:13.5px;margin-top:16px}
+
+/* works */
+.tabs{display:flex;gap:10px;flex-wrap:wrap;margin:32px 0 26px}
+.tab{padding:11px 20px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--muted);font:600 15px Manrope,sans-serif;cursor:pointer}
+.tab.on{background:var(--text);color:var(--bg);border-color:var(--text)}
+.pane{display:none}.pane.on{display:block}
+.masonry{columns:4 220px;column-gap:14px}
+.masonry img{width:100%;border-radius:14px;margin-bottom:14px;cursor:zoom-in;break-inside:avoid;border:1px solid var(--line);transition:opacity .2s}
+.masonry img:hover{opacity:.85}
+.masonry .hidden{display:none}
+.more{display:flex;justify-content:center;margin-top:16px}
+.vids{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.vid{position:relative;border-radius:14px;overflow:hidden;cursor:pointer;aspect-ratio:9/16;background:#000;border:1px solid var(--line)}
+.vid img{width:100%;height:100%;object-fit:cover;transition:transform .3s}
+.vid:hover img{transform:scale(1.04)}
+.vid::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 55%,rgba(0,0,0,.7))}
+.play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:62px;height:62px;border-radius:50%;background:rgba(255,255,255,.92);display:grid;place-items:center;z-index:1;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+.play::before{content:"";border-left:20px solid #111;border-top:12px solid transparent;border-bottom:12px solid transparent;margin-left:5px}
+.vid .cap{position:absolute;left:12px;bottom:10px;z-index:1;font-size:13px;font-weight:600}
+.apps{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.app{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px;text-decoration:none;display:flex;flex-direction:column;gap:10px;transition:transform .15s,border-color .2s}
+.app:hover{transform:translateY(-3px);border-color:var(--accent)}
+.app .emo{font-size:38px}
+.app p{color:var(--muted);font-size:15px}
+.app .open{margin-top:auto;color:var(--accent2);font-weight:700;font-size:15px}
+
+/* trial */
+.trial-grid{display:grid;grid-template-columns:repeat(2,minmax(0,340px));gap:22px;justify-content:center;margin-top:36px}
+.trial-grid .vid{aspect-ratio:9/16}
+.trial-grid .vid .cap{font-size:15px}
+
+/* team */
+.team{display:grid;grid-template-columns:.9fr 1.1fr;gap:40px;align-items:center}
+.team-photos{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.team-photos img{border-radius:18px;width:100%;height:100%;object-fit:cover;border:1px solid var(--line)}
+.team-photos .t1{grid-row:span 2}
+.team ul{list-style:none;margin-top:22px;display:grid;gap:12px}
+.team li{display:flex;gap:12px;align-items:flex-start}
+.team li::before{content:"✓";flex:none;width:26px;height:26px;border-radius:8px;background:rgba(74,222,128,.15);color:var(--ok);display:grid;place-items:center;font-weight:800;font-size:14px;margin-top:2px}
+.contacts-mini{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+
+/* reviews */
+.rev-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:36px}
+.rev{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px;display:flex;flex-direction:column;gap:14px}
+.rev q{font-size:16.5px;quotes:"«" "»"}
+.rev .who{display:flex;align-items:center;gap:12px;margin-top:auto}
+.ava{width:42px;height:42px;border-radius:50%;background:var(--grad);display:grid;place-items:center;font-weight:800}
+.rev .who small{display:block;color:var(--muted);font-size:13px}
+.rev .shots{display:flex;gap:8px;flex-wrap:wrap}
+.rev .shots button{background:none;border:1px solid var(--line);border-radius:10px;padding:0;overflow:hidden;cursor:zoom-in;width:58px;height:80px}
+.rev .shots img{width:100%;height:100%;object-fit:cover;object-position:top}
+
+/* get */
+.get-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:36px}
+.get{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px}
+.get .emo{font-size:30px;margin-bottom:10px}
+.get p{color:var(--muted);font-size:15px;margin-top:6px}
+
+/* price */
+.price{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;margin-top:36px}
+.price-main{background:linear-gradient(150deg,rgba(139,92,246,.25),rgba(34,211,238,.10)),var(--card);border:1px solid rgba(139,92,246,.5);border-radius:24px;padding:36px}
+.price-main .p{font-family:Unbounded,sans-serif;font-size:clamp(40px,6vw,64px);margin:10px 0 4px}
+.price-main ul{list-style:none;margin:20px 0 28px;display:grid;gap:10px}
+.price-main li::before{content:"✓  ";color:var(--ok);font-weight:800}
+.price-side{display:grid;gap:16px}
+.price-side .box{padding:24px}
+.limit{color:var(--money);font-weight:700}
+
+/* faq */
+.faq{margin-top:30px;display:grid;gap:12px;max-width:860px}
+details{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:0 24px}
+summary{cursor:pointer;list-style:none;padding:20px 0;font-weight:700;font-size:17px;display:flex;justify-content:space-between;gap:16px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:24px;line-height:1;color:var(--accent2);transition:transform .2s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{color:var(--muted);padding-bottom:20px}
+
+/* form */
+.cta{background:radial-gradient(ellipse at top,rgba(139,92,246,.25),transparent 60%),var(--bg2);border-top:1px solid var(--line)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+form{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:30px;display:grid;gap:14px}
+label{font-size:14px;color:var(--muted);display:grid;gap:6px}
+input,select,textarea{width:100%;background:#0e0e15;border:1px solid var(--line);color:var(--text);border-radius:12px;padding:14px 16px;font:500 16px Manrope,sans-serif;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+.radio{display:flex;gap:10px}
+.radio label{flex:1;flex-direction:row;display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;color:var(--text)}
+.radio input{width:auto;accent-color:var(--accent)}
+.radio label:has(input:checked){border-color:var(--accent);background:rgba(139,92,246,.12)}
+.small{font-size:12.5px;color:var(--muted)}
+.err{color:#f87171;font-size:14px;display:none}
+
+footer{padding:40px 0;border-top:1px solid var(--line);color:var(--muted);font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.disclaimer{max-width:620px}
+
+/* lightbox */
+.lb{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.lb.on{display:flex}
+.lb img,.lb video{max-height:92vh;max-width:min(92vw,900px);border-radius:12px}
+.lb-x{position:absolute;top:14px;right:18px;font-size:34px;color:#fff;background:none;border:0;cursor:pointer;line-height:1;padding:6px}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);font-size:40px;color:#fff;background:rgba(255,255,255,.08);border:0;width:52px;height:52px;border-radius:50%;cursor:pointer}
+.lb-prev{left:14px}.lb-next{right:14px}
+
+/* mobile sticky cta */
+.sticky{display:none}
+
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s,transform .6s}
+.reveal.in{opacity:1;transform:none}
+
+@media (max-width:980px){
+  nav{display:none}
+  .hero-grid,.team,.form-grid,.price{grid-template-columns:1fr}
+  .collage{max-width:460px;margin:10px auto 0;transform:none}
+  .facts{grid-template-columns:repeat(2,1fr)}
+  .calc{grid-template-columns:1fr 1fr}
+  .calc .total{grid-column:1/-1}
+  .get-grid{grid-template-columns:1fr 1fr}
+}
+@media (max-width:680px){
+  body{font-size:16px}
+  .wrap{padding:0 16px}
+  section{padding:64px 0}
+  .hero{padding:100px 0 50px}
+  header .btn{display:none}
+  .lessons,.about-grid,.rev-grid,.get-grid{grid-template-columns:1fr}
+  .lesson.key,.lesson.wide{grid-column:auto}
+  .masonry{columns:2;column-gap:10px}
+  .masonry img{margin-bottom:10px}
+  .vids{grid-template-columns:1fr 1fr;gap:10px}
+  .trial-grid{grid-template-columns:1fr 1fr;gap:12px}
+  .play{width:48px;height:48px}
+  .box,.lesson,.price-main,form{padding:22px}
+  .hero-btns .btn{width:100%}
+  .sticky{display:flex;position:fixed;left:12px;right:12px;bottom:12px;z-index:60;transition:transform .3s}
+  .sticky.hide{transform:translateY(140%)}
+  .sticky .btn{width:100%}
+  footer{padding-bottom:100px}
+  .lb-nav{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+</style>
+<!-- Яндекс Метрика: вставить код счётчика сюда -->
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a href="#top" class="logo"><img src="img/logo-mark.png" alt="">Теория <span>запроса</span></a>
+    <nav>
+      <a href="#program">Программа</a>
+      <a href="#works">Работы учеников</a>
+      <a href="#trial">Пробный урок</a>
+      <a href="#reviews">Отзывы</a>
+      <a href="#price">Цена</a>
+    </nav>
+    <a href="#signup" class="btn btn-main">Записаться</a>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="tag"><span class="dot"></span>Открыт набор на 2 поток · места ограничены</span>
+      <h1>Стань специалистом по&nbsp;ИИ и&nbsp;начни зарабатывать <span class="money">от&nbsp;100&nbsp;000&nbsp;₽</span> уже сейчас</h1>
+      <p class="sub">Курс «Теория запроса»: нейросети с нуля до уровня, когда за вашу работу платят. Тексты, документы и таблицы, изображения, автоматизация бизнеса, сайты и AI-видео.</p>
+      <div class="hero-btns">
+        <a href="#signup" class="btn btn-main">Записаться на курс →</a>
+        <a href="#trial" class="btn btn-ghost">▶ Смотреть пробный урок</a>
+      </div>
+      <div class="facts">
+        <div class="fact"><b>с нуля</b><span>покажем даже регистрацию и VPN</span></div>
+        <div class="fact"><b>19:00</b><span>ежедневные уроки</span></div>
+        <div class="fact"><b>~20 дней</b><span>2 этапа: ИИ и видео</span></div>
+        <div class="fact"><b>3 / 5 мес</b><span>рассрочка</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="collage">
+        <img class="c1" src="img/works/w12.jpg" alt="AI-фотография, созданная на курсе">
+        <img class="c2" src="img/works/w03.jpg" alt="AI-реклама парфюма">
+        <img class="c3" src="img/works/w26.jpg" alt="AI-реклама сумки">
+      </div>
+      <p class="collage-note">Эти фото не снимали на камеру: их создали нейросети на курсе</p>
+    </div>
+  </div>
+</section>
+
+<div class="strip" aria-hidden="true"><div class="strip-in">
+  <span>ChatGPT</span><span>Claude</span><span>Grok</span><span>Документы и таблицы</span><span>AI-фотосессии</span><span>Автоматизация</span><span>Codex</span><span>Claude Code</span><span>Сайты и приложения</span><span>AI-видео</span>
+  <span>ChatGPT</span><span>Claude</span><span>Grok</span><span>Документы и таблицы</span><span>AI-фотосессии</span><span>Автоматизация</span><span>Codex</span><span>Claude Code</span><span>Сайты и приложения</span><span>AI-видео</span>
+</div></div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="wrap">
+    <h2 class="reveal">Что такое <span class="grad">«Теория запроса»</span></h2>
+    <p class="sub reveal"><b style="color:var(--text)">Искусство диалога с ИИ.</b> Курс о том, как сделать искусственный интеллект своим рабочим инструментом, а не игрушкой на пару вечеров.</p>
+    <div class="about-grid">
+      <div class="box reveal">
+        <p class="big">Учим принципам, а не кнопкам</p>
+        <p>Сервисы будут меняться, модели станут сильнее. Сам по себе доступ к ИИ почти ничего не даёт: результат получает тот, кто понимает, какую задачу поставить, какой инструмент выбрать и как довести ответ до рабочего состояния.</p>
+        <p>Кто умеет правильно формулировать запрос, освоит любую новую нейросеть за вечер. Отсюда и название.</p>
+      </div>
+      <div class="box voice reveal">
+        <p class="big">Пример: табель голосом</p>
+        <p>Вы говорите в телефон:</p>
+        <div class="bubble">Табель на сегодня. Всем по 8 часов, третьему и четвёртому по 4, пятый отсутствовал.</div>
+        <table class="mini-table">
+          <tr><th>№</th><th>Сотрудник</th><th>Часы</th></tr>
+          <tr><td>1–2</td><td>…</td><td>8</td></tr>
+          <tr><td>3–4</td><td>…</td><td>4</td></tr>
+          <tr><td>5</td><td>…</td><td style="color:#f87171">Н</td></tr>
+        </table>
+        <p style="margin-top:14px">Таблица заполняется сама. И это лишь один урок из курса.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROGRAM -->
+<section id="program" style="background:var(--bg2)">
+  <div class="wrap">
+    <h2 class="reveal">Программа курса</h2>
+    <p class="sub reveal">Под каждой темой: сколько обычно платят за такую работу. Начинать брать заказы можно уже после первых уроков.</p>
+
+    <div class="stage-head"><h3>Этап 1. Нейросети и автоматизация</h3><span>10 дней</span></div>
+    <div class="lessons">
+
+      <div class="lesson reveal">
+        <span class="num">УРОК 1</span>
+        <h3>Старт: аккаунты, VPN, оплата</h3>
+        <p>Регистрируем Google-аккаунт, ставим VPN на компьютер, устанавливаем Google Chrome и преодолеваем все трудности по пути. Разбираем основные способы оплаты зарубежных нейросетей.</p>
+        <div class="hw"><b>ДЗ:</b> пройти регистрацию и оформить подписку</div>
+        <div class="earn"><span class="ico">💰</span><div><small>Сколько можно заработать</small><b>1 000–3 000 ₽ за настройку под ключ: регистрация, VPN и оплата подписки для клиента</b></div></div>
+      </div>
+
+      <div class="lesson reveal">
+        <span class="num">УРОК 2</span>
+        <h3>Текстовые нейросети: возможности и ограничения</h3>
+        <p>Как работают LLM. Сравниваем ChatGPT, Claude и Grok: бесплатные и платные версии, лимиты, память, документы и изображения. Галлюцинации и «относительная объективность», голосовой чат, плагины для почты, таблиц и календаря. Настраиваем персонализацию ChatGPT.</p>
+        <div class="earn"><span class="ico">💰</span><div><small>Сколько можно заработать</small><b>1 000–5 000 ₽ за заказ: тексты, посты, описания товаров, ответы клиентам</b></div></div>
+      </div>
+
+      <div class="lesson reveal">
+        <span class="num">УРОК 3</span>
+        <h3>Как формулировать запросы и работать с информацией</h3>
+        <p>Из чего состоит точный запрос: определение, контекст, тезис, задача. Типичные ошибки на примерах. Глубокое исследование: источники, сравнение позиций, отличие фактов от предположений ИИ.</p>
+        <div class="earn"><span class="ico">💰</span><div><small>Сколько можно заработать</small><b>3 000–15 000 ₽ за исследование рынка, конкурентов или подбор информации</b></div></div>
+      </div>
+
+      <div class="lesson reveal">
+        <span class="num">УРОК 5</span>
+        <h3>Работа с изображениями</h3>
+        <p>Создаём и редактируем изображения: композиция, свет, стиль, фон, одежда, отдельные объекты. Соотношения сторон, логотипы, референсы, рекламные визуалы, карточки товаров, учебные материалы.</p>
+        <div class="earn"><span class="ico">💰</span><div><small>Сколько можно заработать</small><b>3 000–15 000 ₽ за карточки и визуалы, 5 000–30 000 ₽ за AI-фотосессию</b></div></div>
+      </div>
+
+      <div class="lesson key reveal">
+        <span class="badge">★ Ключевой урок</span>
+        <span class="num">УРОК 4</span>
+        <h3>Работа с документами: от генерации текста до тонны документов</h3>
+        <p>Самый практичный урок курса. Учимся всему: от формул до профессиональных таблиц. Нейросеть берёт на себя рутину, на которую у людей уходят часы и дни, а вы выполняете в разы больше работы.</p>
+        <div class="chips"><span>Word и PDF</span><span>Excel и Google Таблицы</span><span>Формулы</span><span>Профессиональные таблицы</span><span>Отчёты</span><span>Договоры и шаблоны</span><span>Большие файлы</span><span>Пакетная обработка</span></div>
+        <div class="earn"><span class="ico">💰</span><div><small>Сколько можно заработать</small><b>3 000–15 000 ₽ за разовый документ или таблицу, 15 000–50 000 ₽ за автоматизацию таблиц и отчётности</b></div></div>
+      </div>
+
+      <div class="lesson reveal">
+        <span class="num">УРОК 6</span>
+        <h3>Промпты и автоматизация</h3>
+        <p>Превращаем запросы в рабочие инструкции. Через плагины автоматизируем табели, таблицу заказов, учёт платежей по рассрочкам, работу с Google Диском. Структура рабочего промпта, цепочки операций, шаблоны, защита от ошибок с деньгами и документами.</p>
+        <div class="earn"><span class="ico">💰</span><div><small>Сколько можно заработать</small><b>15 000–50 000 ₽ за автоматизацию, от 50 000 ₽ за комплексную автоматизацию бизнеса</b></div></div>
+      </div>
+
+      <div class="lesson reveal">
+        <span class="num">УРОК 7</span>
+        <h3>Основы вайб-кодинга</h3>
+        <p>Программируем без знания кода: вы объясняете словами, ИИ пишет программу. Изучаем Codex, Claude Code и другие инструменты.</p>
+        <div class="hw"><b>ДЗ (сложное):</b> сделать свой сайт и приложение</div>
+        <div class="earn"><span class="ico">💰</span><div><small>Сколько можно заработать</small><b>15 000–50 000 ₽ за сайт-лендинг, от 30 000 ₽ за приложение</b></div></div>
+      </div>
+
+      <div class="lesson wide reveal">
+        <span class="num">УРОК 8</span>
+        <h3>Создание локальных программ</h3>
+        <p>Делаем полноценные программы в одном HTML-файле: калькуляторы, тренажёры, игры, инструменты для бизнеса. Такой файл можно отправить кому угодно, и он откроется на любом устройстве. Примеры работ учеников есть <a href="#works" data-tab="apps">ниже</a>.</p>
+        <div class="earn"><span class="ico">💰</span><div><small>Сколько можно заработать</small><b>5 000–30 000 ₽ за программу для клиента: калькулятор, конфигуратор, учебный тренажёр</b></div></div>
+      </div>
+    </div>
+
+    <div class="stage-head"><h3>Этап 2. Видеогенерация</h3><span>около 10 дней</span></div>
+    <div class="lessons">
+      <div class="lesson wide reveal">
+        <h3>AI-видео для бизнеса и соцсетей</h3>
+        <p>Рекламные ролики, AI-модели, контент для соцсетей, презентации товаров, мультсериалы и коммерческие видео без съёмочной группы и дорогого оборудования. Можно вести свой блог в любой нише: кулинария, бизнес, юмор, образование, путешествия.</p>
+        <div class="earn"><span class="ico">💰</span><div><small>Сколько можно заработать</small><b>5 000–50 000 ₽ за рекламный ролик, от 20 000 ₽/мес за ведение AI-контента для бизнеса</b></div></div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:60px;font-size:24px" class="reveal">Как может сложиться 100 000 ₽ в месяц</h3>
+    <div class="calc reveal">
+      <div class="it"><b>2 × 25 000 ₽</b>автоматизация таблиц и отчётности</div>
+      <div class="it"><b>1 × 25 000 ₽</b>сайт-лендинг для бизнеса</div>
+      <div class="it"><b>3 × 5 000 ₽</b>AI-фотосессии или карточки</div>
+      <div class="it"><b>2 × 5 000 ₽</b>рекламные AI-ролики</div>
+      <div class="total"><span>Итого</span><b>100 000 ₽</b></div>
+    </div>
+    <p class="note">Цены ориентировочные, по рынку фриланса. Курс не гарантирует заработок: результат зависит от того, как вы примените знания. Но инструменты у вас будут.</p>
+  </div>
+</section>
+
+<!-- WORKS -->
+<section id="works">
+  <div class="wrap">
+    <h2 class="reveal">Работы наших учеников</h2>
+    <p class="sub reveal">Всё ниже создано с помощью нейросетей на курсе: фото, видео и даже программы.</p>
+    <div class="tabs" role="tablist">
+      <button class="tab on" data-pane="photos">📸 AI-фото</button>
+      <button class="tab" data-pane="videos">🎬 AI-видео</button>
+      <button class="tab" data-pane="apps">💻 Программы</button>
+    </div>
+
+    <div class="pane on" id="pane-photos">
+      <div class="masonry" id="gallery"></div>
+      <div class="more"><button class="btn btn-ghost" id="moreBtn">Показать ещё</button></div>
+    </div>
+
+    <div class="pane" id="pane-videos">
+      <div class="vids" id="vids"></div>
+    </div>
+
+    <div class="pane" id="pane-apps">
+      <div class="apps">
+        <a class="app" href="apps/shield.html" target="_blank" rel="noopener"><span class="emo">⚡</span><h3>Сборка электрощита</h3><p>Интерактивный конструктор электрощита для клиента: заказчик сам видит, что и куда ставится.</p><span class="open">Открыть →</span></a>
+        <a class="app" href="apps/math.html" target="_blank" rel="noopener"><span class="emo">🧮</span><h3>Математический тренажёр</h3><p>Тренажёр для устного счёта с уровнями сложности.</p><span class="open">Открыть →</span></a>
+        <a class="app" href="apps/quiz.html" target="_blank" rel="noopener"><span class="emo">🎬</span><h3>Quiz World</h3><p>Викторина с вопросами про кино и не только.</p><span class="open">Открыть →</span></a>
+        <a class="app" href="apps/chess.html" target="_blank" rel="noopener"><span class="emo">♟️</span><h3>Шахматы</h3><p>Полноценные шахматы прямо в браузере.</p><span class="open">Открыть →</span></a>
+        <a class="app" href="apps/checkers.html" target="_blank" rel="noopener"><span class="emo">⚫</span><h3>Шашки с ботом</h3><p>Игра в шашки против компьютера.</p><span class="open">Открыть →</span></a>
+      </div>
+      <p class="note">Каждая программа — это один HTML-файл, сделанный с ИИ без знания программирования.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TRIAL -->
+<section id="trial" style="background:var(--bg2)">
+  <div class="wrap" style="text-align:center">
+    <h2 class="reveal">Пробный урок</h2>
+    <p class="sub reveal" style="margin:0 auto">Посмотрите, как проходят занятия, прежде чем записываться.</p>
+    <div class="trial-grid">
+      <div class="vid" data-src="video/trial1.mp4"><img src="video/trial1.jpg" alt="Пробный урок, часть 1" loading="lazy"><span class="play"></span><span class="cap">Часть 1 · 7 мин</span></div>
+      <div class="vid" data-src="video/trial2.mp4"><img src="video/trial2.jpg" alt="Пробный урок, часть 2" loading="lazy"><span class="play"></span><span class="cap">Часть 2 · 8 мин</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section id="team">
+  <div class="wrap team">
+    <div class="team-photos reveal">
+      <img class="t1" src="img/team/ilyas1.jpg" alt="Ильяс, преподаватель курса" loading="lazy">
+      <img src="img/team/ilyas2.jpg" alt="Ильяс" loading="lazy">
+      <img src="img/team/ilyas3.jpg" alt="Ильяс" loading="lazy">
+    </div>
+    <div class="reveal">
+      <h2>Преподаватели</h2>
+      <p class="sub">Ильяс и Мялхаьзни — авторы курса «Теория запроса». Ведут уроки сами, проверяют домашние задания и отвечают на вопросы учеников.</p>
+      <ul>
+        <li>На связи с учениками, как пишут в отзывах, «двадцать четыре часа в сутки, семь дней в неделю»</li>
+        <li>Объясняют простым языком: курс проходят даже с телефона, без компьютера</li>
+        <li>Показывают реальные рабочие задачи, а не теорию ради теории</li>
+        <li>Подскажут, какие подписки действительно нужны, чтобы вы не переплачивали</li>
+      </ul>
+      <div class="contacts-mini">
+        <a class="btn btn-wa" href="https://wa.me/79640656713" target="_blank" rel="noopener">WhatsApp Ильяс</a>
+        <a class="btn btn-wa" href="https://wa.me/79284840303" target="_blank" rel="noopener">WhatsApp Мялхаьзни</a>
+        <a class="btn btn-tg" href="https://t.me/teoriyazaprosa" target="_blank" rel="noopener">Группа в Telegram</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews" style="background:var(--bg2)">
+  <div class="wrap">
+    <h2 class="reveal">Отзывы учеников первого потока</h2>
+    <p class="sub reveal">Настоящие сообщения из чатов. Нажмите на скриншот, чтобы увеличить.</p>
+    <div class="rev-grid">
+      <div class="rev reveal">
+        <q>Изначально думал, что всё будет намного сложнее. Тем более у меня не было ни ноутбука, ни компьютера, весь курс проходил и все задания делал на телефоне. Но и так всё прекрасно получалось. Уже начинаю использовать полученные знания на практике, пробую делать свои ролики.</q>
+        <div class="shots"><button data-img="img/reviews/r6.jpg"><img src="img/reviews/r6.jpg" alt="Скриншот отзыва" loading="lazy"></button><button data-img="img/reviews/r7.jpg"><img src="img/reviews/r7.jpg" alt="Скриншот отзыва" loading="lazy"></button></div>
+        <div class="who"><span class="ava">И</span><div><b>Изнаур</b><small>проходил курс с телефона</small></div></div>
+      </div>
+      <div class="rev reveal">
+        <q>Честно, я рада, что решила пройти этот курс. До этого генерация ИИ-видео казалась чем-то сложным, а сейчас я уже намного лучше понимаю, с чего начинать и как работать в этом направлении. Умею сама генерировать популярные видео из соцсетей, а также модельные фотографии.</q>
+        <div class="shots"><button data-img="img/reviews/r2.jpg"><img src="img/reviews/r2.jpg" alt="Скриншот отзыва" loading="lazy"></button></div>
+        <div class="who"><span class="ava">К</span><div><b>Камила</b><small>ученица курса</small></div></div>
+      </div>
+      <div class="rev reveal">
+        <q>Нам казалось, что без этих профессий наши идеи так и останутся лишь в воображении. Этот курс помог поверить в свои силы и, главное, дал знания и инструменты, с которыми можно начать воплощать задуманное. Ильяс, Мялхаьзни, спасибо вам за ваш труд, за ваши идеи и за время.</q>
+        <div class="shots"><button data-img="img/reviews/r3.jpg"><img src="img/reviews/r3.jpg" alt="Скриншот отзыва" loading="lazy"></button><button data-img="img/reviews/r4.jpg"><img src="img/reviews/r4.jpg" alt="Скриншот отзыва" loading="lazy"></button><button data-img="img/reviews/r5.jpg"><img src="img/reviews/r5.jpg" alt="Скриншот отзыва" loading="lazy"></button></div>
+        <div class="who"><span class="ava">А</span><div><b>Анвар</b><small>ученик курса</small></div></div>
+      </div>
+      <div class="rev reveal">
+        <q>Мне очень понравился курс! Всё было интересно, доступно и понятно. Узнала много нового и освоила полезные фишки по созданию реалистичных фотографий, видео, документов. Преподаватели всегда были на связи, помогали с домашними заданиями, указывали на ошибки и объясняли, как исправить.</q>
+        <div class="shots"><button data-img="img/reviews/r1.jpg"><img src="img/reviews/r1.jpg" alt="Скриншот отзыва" loading="lazy"></button></div>
+        <div class="who"><span class="ava">У</span><div><b>Ученица курса</b><small>первый поток</small></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GET -->
+<section id="get">
+  <div class="wrap">
+    <h2 class="reveal">Что вы получаете</h2>
+    <div class="get-grid">
+      <div class="get reveal"><div class="emo">📅</div><h3>Уроки каждый день</h3><p>Ежедневно в 19:00, удобно совмещать с работой или учёбой.</p></div>
+      <div class="get reveal"><div class="emo">✅</div><h3>Проверка ДЗ</h3><p>Отдельный канал для домашних заданий с проверкой и разбором ошибок.</p></div>
+      <div class="get reveal"><div class="emo">👥</div><h3>Закрытое сообщество</h3><p>Общение с другими учениками, созвоны и отчёты.</p></div>
+      <div class="get reveal"><div class="emo">🎞</div><h3>Доступ на полгода</h3><p>Все видеоуроки остаются у вас ещё 6 месяцев после курса.</p></div>
+      <div class="get reveal"><div class="emo">🎓</div><h3>Сертификат</h3><p>Сертификат о прохождении обучения.</p></div>
+      <div class="get reveal"><div class="emo">🚀</div><h3>Навык, который продаётся</h3><p>Применяйте в работе, в своём бизнесе или продавайте как услугу.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICE -->
+<section id="price" style="background:var(--bg2)">
+  <div class="wrap">
+    <h2 class="reveal">Стоимость обучения</h2>
+    <div class="price">
+      <div class="price-main reveal">
+        <span class="tag"><span class="dot"></span>Второй поток</span>
+        <div class="p">35 000 ₽</div>
+        <p style="color:var(--muted)">или в рассрочку на 3 или 5 месяцев</p>
+        <ul>
+          <li>Оба этапа: нейросети и видеогенерация</li>
+          <li>Проверка домашних заданий</li>
+          <li>Закрытое сообщество и созвоны</li>
+          <li>Доступ к урокам на полгода</li>
+          <li>Сертификат</li>
+        </ul>
+        <a href="#signup" class="btn btn-main" style="width:100%">Забронировать место</a>
+      </div>
+      <div class="price-side">
+        <div class="box reveal"><p class="big">Рассрочка</p><p style="color:var(--muted)">Через партнёрскую организацию на 3 или 5 месяцев, с первоначальным взносом или без.</p></div>
+        <div class="box reveal"><p class="big">Подписки на нейросети</p><p style="color:var(--muted)">Дополнительно понадобится около 5 000–10 000 ₽. Подскажем, что действительно нужно, чтобы вы не переплачивали.</p></div>
+        <div class="box reveal"><p class="big limit">Места ограничены</p><p style="color:var(--muted)">Группа набирается прямо сейчас. ИИ уже пришёл в вашу профессию: вопрос только в том, будете ли вы пользоваться им лучше других.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="wrap">
+    <h2 class="reveal">Частые вопросы</h2>
+    <div class="faq">
+      <details><summary>Я никогда не работал с нейросетями. Справлюсь?</summary><p>Да. Начинаем с нуля: на первом уроке показываем, как зарегистрироваться, настроить VPN, установить браузер и оплатить зарубежные сервисы.</p></details>
+      <details><summary>Можно ли пройти курс с телефона?</summary><p>Да, ученики первого потока проходили курс и делали все задания с телефона. Но для урока по вайб-кодингу и работы с большими документами удобнее компьютер.</p></details>
+      <details><summary>Сколько времени нужно уделять?</summary><p>Уроки каждый день в 19:00, плюс время на домашние задания. Все записи остаются у вас на полгода, так что пропущенный урок можно посмотреть позже.</p></details>
+      <details><summary>Вы гарантируете заработок?</summary><p>Честно: нет. Результат зависит от того, как вы примените знания. Мы даём навыки и показываем, за что платят, а дальше всё в ваших руках.</p></details>
+      <details><summary>Какие нужны расходы кроме курса?</summary><p>Подписки на нейросети, примерно 5 000–10 000 ₽. Мы подскажем, какие действительно нужны.</p></details>
+      <details><summary>Как оформить рассрочку?</summary><p>Оставьте заявку или напишите в WhatsApp: расскажем условия рассрочки на 3 или 5 месяцев, с первоначальным взносом или без.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- SIGNUP -->
+<section id="signup" class="cta">
+  <div class="wrap form-grid">
+    <div class="reveal">
+      <span class="tag"><span class="dot"></span>Запись открыта</span>
+      <h2 style="margin-top:18px">Займите место во втором потоке</h2>
+      <p class="sub">Оставьте имя и телефон: мы свяжемся с вами и расскажем подробности. Или напишите нам сами:</p>
+      <div class="contacts-mini">
+        <a class="btn btn-wa" href="https://wa.me/79640656713" target="_blank" rel="noopener">WhatsApp Ильяс</a>
+        <a class="btn btn-wa" href="https://wa.me/79284840303" target="_blank" rel="noopener">WhatsApp Мялхаьзни</a>
+        <a class="btn btn-tg" href="https://t.me/teoriyazaprosa" target="_blank" rel="noopener">Наша группа в Telegram</a>
+      </div>
+    </div>
+    <form id="leadForm" class="reveal" novalidate>
+      <div id="formFields" style="display:grid;gap:14px">
+        <label>Ваше имя<input name="name" autocomplete="name" placeholder="Как к вам обращаться" required></label>
+        <label>Телефон<input name="phone" type="tel" autocomplete="tel" placeholder="+7 900 000-00-00" required></label>
+        <label>Вариант оплаты
+          <div class="radio">
+            <label><input type="radio" name="pay" value="полная оплата" checked> Сразу</label>
+            <label><input type="radio" name="pay" value="рассрочка"> Рассрочка</label>
+          </div>
+        </label>
+        <input name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px">
+        <p class="err" id="formErr">Пожалуйста, укажите имя и телефон.</p>
+        <button class="btn btn-main" type="submit" id="formBtn">Оставить заявку</button>
+        <p class="small">Нажимая кнопку, вы соглашаетесь на обработку персональных данных для связи с вами.</p>
+      </div>
+      <div id="formDone" style="display:none;text-align:center">
+        <div style="font-size:48px">✅</div>
+        <h3 style="margin:10px 0">Заявка отправлена!</h3>
+        <p style="color:var(--muted);margin-bottom:20px">Мы скоро свяжемся с вами. А пока вступайте в нашу группу: там новости курса и полезные материалы.</p>
+        <a class="btn btn-tg" style="width:100%" href="https://t.me/teoriyazaprosa" target="_blank" rel="noopener">Вступить в группу в Telegram</a>
+      </div>
+    </form>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div><img src="img/logo-mark.png" alt="" width="48" height="48" style="border-radius:12px;margin-bottom:10px;display:block"><b style="color:var(--text)">Теория запроса</b><br>Искусство диалога с ИИ · 2026<br>
+      <a href="https://wa.me/79640656713" target="_blank" rel="noopener">WhatsApp Ильяс</a> ·
+      <a href="https://wa.me/79284840303" target="_blank" rel="noopener">WhatsApp Мялхаьзни</a> ·
+      <a href="https://t.me/teoriyazaprosa" target="_blank" rel="noopener">Telegram-группа</a></div>
+    <p class="disclaimer">Указанные суммы заработка ориентировочные и не являются гарантией дохода. Результат зависит от ваших усилий и того, как вы примените полученные знания.</p>
+  </div>
+</footer>
+
+<div class="sticky" id="sticky"><a href="#signup" class="btn btn-main">Записаться на курс</a></div>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true">
+  <button class="lb-x" aria-label="Закрыть">×</button>
+  <button class="lb-nav lb-prev" aria-label="Назад">‹</button>
+  <div id="lbBody"></div>
+  <button class="lb-nav lb-next" aria-label="Вперёд">›</button>
+</div>
+
+<script>
+// --- галерея фото ---
+const PHOTOS = 30, FIRST = 12;
+const order = [12,3,26,1,8,17,22,6,29,10,24,2,4,5,7,9,11,13,14,15,16,18,19,20,21,23,25,27,28,30];
+const gallery = document.getElementById('gallery');
+order.forEach((n,i)=>{
+  const img = document.createElement('img');
+  img.src = `img/works/w${String(n).padStart(2,'0')}.jpg`;
+  img.alt = 'AI-фото, созданное учеником'; img.loading = 'lazy';
+  if(i>=FIRST) img.classList.add('hidden');
+  gallery.appendChild(img);
+});
+document.getElementById('moreBtn').onclick = e=>{
+  gallery.querySelectorAll('.hidden').forEach(i=>i.classList.remove('hidden'));
+  e.target.parentNode.remove();
+};
+
+// --- видео учеников ---
+const VIDS = [['v01','«Ключ от дома»'],['v03','«Не сломить»'],['v05','«Мастерская забытых вещей»'],['v06','«Аш-Шафии»'],['v02','AI-фильм'],['v04','AI-мультфильм'],['v08','Кинематографичная сцена'],['v09','Атмосферный ролик'],['v11','Реклама автомобиля'],['v07','AI-портрет'],['v10','AI-заставка']];
+const vids = document.getElementById('vids');
+VIDS.forEach(([f,cap])=>{
+  vids.insertAdjacentHTML('beforeend',`<div class="vid" data-src="video/${f}.mp4"><img src="video/${f}.jpg" alt="${cap}" loading="lazy"><span class="play"></span><span class="cap">${cap}</span></div>`);
+});
+
+// --- вкладки ---
+function openTab(name){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.dataset.pane===name));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id==='pane-'+name));
+}
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>openTab(t.dataset.pane));
+document.querySelectorAll('[data-tab]').forEach(a=>a.addEventListener('click',()=>openTab(a.dataset.tab)));
+
+// --- лайтбокс ---
+const lb = document.getElementById('lb'), lbBody = document.getElementById('lbBody');
+let list = [], idx = 0;
+function show(){
+  const it = list[idx];
+  lbBody.innerHTML = it.type==='video'
+    ? `<video src="${it.src}" controls autoplay playsinline></video>`
+    : `<img src="${it.src}" alt="">`;
+  lb.querySelectorAll('.lb-nav').forEach(b=>b.style.display = list.length>1 ? '' : 'none');
+}
+function openLb(items,i){ list=items; idx=i; show(); lb.classList.add('on'); document.body.style.overflow='hidden'; }
+function closeLb(){ lb.classList.remove('on'); lbBody.innerHTML=''; document.body.style.overflow=''; }
+lb.querySelector('.lb-x').onclick = closeLb;
+lb.onclick = e=>{ if(e.target===lb) closeLb(); };
+lb.querySelector('.lb-prev').onclick = ()=>{ idx=(idx-1+list.length)%list.length; show(); };
+lb.querySelector('.lb-next').onclick = ()=>{ idx=(idx+1)%list.length; show(); };
+document.addEventListener('keydown',e=>{
+  if(!lb.classList.contains('on')) return;
+  if(e.key==='Escape') closeLb();
+  if(e.key==='ArrowLeft') lb.querySelector('.lb-prev').click();
+  if(e.key==='ArrowRight') lb.querySelector('.lb-next').click();
+});
+gallery.addEventListener('click',e=>{
+  if(e.target.tagName!=='IMG') return;
+  const imgs=[...gallery.querySelectorAll('img:not(.hidden)')];
+  openLb(imgs.map(i=>({src:i.src})), imgs.indexOf(e.target));
+});
+document.addEventListener('click',e=>{
+  const v = e.target.closest('.vid');
+  if(v){ const group=[...v.parentNode.querySelectorAll('.vid')]; openLb(group.map(g=>({type:'video',src:g.dataset.src})), group.indexOf(v)); return; }
+  const s = e.target.closest('.shots button');
+  if(s){ const group=[...s.parentNode.querySelectorAll('button')]; openLb(group.map(g=>({src:g.dataset.img})), group.indexOf(s)); }
+});
+
+// --- форма: заявка в Telegram-бота и Google Таблицу ---
+// Адрес веб-приложения Google Apps Script (см. папку «бот-заявки»):
+const LEAD_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwttODuNplp4nmeT_ixOGZrJTp0wtjw7AQ7RkHC7kRQO9i3mKrbaBEvP0nWfApUbAU-rg/exec';
+const WA_FALLBACK = '79640656713'; // если адрес выше не задан или запрос не прошёл, откроется WhatsApp
+
+const utm = new URLSearchParams(location.search);
+const utmStr = ['utm_source','utm_medium','utm_campaign'].map(k=>utm.get(k)).filter(Boolean).join(' / ');
+
+document.getElementById('leadForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const f = e.target, name=f.name.value.trim(), phone=f.phone.value.trim();
+  const err = document.getElementById('formErr'), btn = document.getElementById('formBtn');
+  if(!name || phone.replace(/\D/g,'').length<10){ err.style.display='block'; return; }
+  err.style.display='none';
+  if(window.ym && window.YM_ID) ym(window.YM_ID,'reachGoal','lead');
+
+  const waText = `Здравствуйте! Хочу записаться на курс «Теория запроса».\nИмя: ${name}\nТелефон: ${phone}\nОплата: ${f.pay.value}`;
+  const toWhatsApp = ()=>window.open(`https://wa.me/${WA_FALLBACK}?text=${encodeURIComponent(waText)}`,'_blank');
+  if(!LEAD_ENDPOINT){ toWhatsApp(); return; }
+
+  btn.disabled = true; btn.textContent = 'Отправляем…';
+  try{
+    await fetch(LEAD_ENDPOINT,{method:'POST',mode:'no-cors',body:new URLSearchParams({
+      name, phone, pay:f.pay.value, website:f.website.value, utm:utmStr, ref:document.referrer
+    })});
+    document.getElementById('formFields').style.display='none';
+    document.getElementById('formDone').style.display='block';
+  }catch(_){
+    btn.disabled = false; btn.textContent = 'Оставить заявку';
+    toWhatsApp();
+  }
+});
+
+// --- анимация появления ---
+const io = new IntersectionObserver(es=>es.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target);} }),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+// --- плавающая кнопка на телефоне: прячем у формы ---
+const sticky = document.getElementById('sticky'), signup = document.getElementById('signup');
+new IntersectionObserver(([en])=>sticky.classList.toggle('hide',en.isIntersecting),{threshold:.05}).observe(signup);
+</script>
+</body>
+</html>

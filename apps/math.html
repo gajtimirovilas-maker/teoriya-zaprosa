@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#102a43">
+  <title>Математический тренажёр</title>
+  <style>
+    :root {
+      --navy: #102a43;
+      --blue: #1677ff;
+      --blue-dark: #0d5fd4;
+      --mint: #19b37a;
+      --red: #e5484d;
+      --ink: #172b3a;
+      --muted: #6b7c8f;
+      --paper: #ffffff;
+      --line: #e4eaf0;
+      --bg-a: #eaf5ff;
+      --bg-b: #f4fbf8;
+      --shadow: 0 18px 55px rgba(16, 42, 67, .14);
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    html, body { min-height: 100%; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-rounded, "SF Pro Rounded", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 12%, rgba(22,119,255,.14), transparent 30rem),
+        radial-gradient(circle at 88% 90%, rgba(25,179,122,.14), transparent 28rem),
+        linear-gradient(145deg, var(--bg-a), var(--bg-b));
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      overscroll-behavior: none;
+    }
+
+    button, select { font: inherit; }
+
+    .app {
+      width: min(100%, 480px);
+      min-height: min(760px, calc(100dvh - 36px));
+      background: rgba(255,255,255,.93);
+      border: 1px solid rgba(255,255,255,.8);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .topbar {
+      padding: 22px 22px 18px;
+      background: linear-gradient(135deg, #102a43, #194f7a);
+      color: white;
+    }
+
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .logo {
+      width: 45px; height: 45px; border-radius: 14px;
+      display: grid; place-items: center;
+      background: linear-gradient(145deg, #29d69b, #12a66f);
+      box-shadow: inset 0 1px rgba(255,255,255,.35), 0 7px 20px rgba(0,0,0,.18);
+      font-size: 24px; font-weight: 900;
+    }
+    h1 { margin: 0; font-size: 21px; letter-spacing: -.3px; }
+    .subtitle { margin: 3px 0 0; font-size: 13px; color: #cfe1f3; }
+
+    main { padding: 20px; }
+    .screen { display: none; }
+    .screen.active { display: block; animation: appear .22s ease-out; }
+    @keyframes appear { from { opacity: 0; transform: translateY(5px); } }
+
+    .hero {
+      text-align: center;
+      padding: 18px 10px 13px;
+    }
+    .hero-icon {
+      width: 90px; height: 90px; margin: 0 auto 16px;
+      display: grid; place-items: center;
+      border-radius: 28px;
+      background: linear-gradient(145deg, #e7f2ff, #f0fff9);
+      color: var(--blue); font-size: 40px; font-weight: 900;
+      transform: rotate(-3deg);
+    }
+    .hero h2 { margin: 0 0 8px; font-size: 28px; letter-spacing: -.7px; }
+    .hero p { margin: 0 auto; max-width: 330px; color: var(--muted); line-height: 1.5; }
+
+    .setting {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 14px; margin: 20px 0 14px; padding: 13px 15px;
+      border: 1px solid var(--line); border-radius: 15px; background: #f8fafc;
+    }
+    .setting label { font-weight: 750; }
+    select {
+      border: 0; background: white; color: var(--ink); border-radius: 10px;
+      padding: 9px 11px; box-shadow: 0 0 0 1px var(--line); outline: none;
+    }
+
+    .primary, .secondary, .skip-btn, .answer-btn, .clear-btn {
+      border: 0; cursor: pointer; font-weight: 800; transition: transform .08s, filter .15s;
+    }
+    button:active { transform: scale(.97); }
+    .primary {
+      width: 100%; padding: 16px; color: white; background: var(--blue);
+      border-radius: 15px; box-shadow: 0 9px 22px rgba(22,119,255,.25); font-size: 17px;
+    }
+    .primary:hover { filter: brightness(.96); }
+    .secondary {
+      width: 100%; padding: 13px; color: var(--navy); background: #edf3f8;
+      border-radius: 13px;
+    }
+
+    .rules {
+      margin: 18px 0 4px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    }
+    .rule { padding: 11px 6px; border-radius: 13px; text-align: center; background: #f4f8fb; }
+    .rule strong { display: block; font-size: 17px; color: var(--navy); }
+    .rule span { font-size: 11px; color: var(--muted); }
+
+    .game-head { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; }
+    .stat { padding: 10px 12px; background: #f4f8fb; border-radius: 13px; }
+    .stat:last-child { text-align: right; }
+    .stat span { display: block; color: var(--muted); font-size: 11px; }
+    .stat strong { font-size: 20px; color: var(--navy); }
+    .timer {
+      width: 70px; height: 70px; position: relative; display: grid; place-items: center;
+    }
+    .timer svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+    .timer circle { fill: none; stroke-width: 7; }
+    .timer .track { stroke: #e6edf3; }
+    .timer .progress { stroke: var(--blue); stroke-linecap: round; transition: stroke-dashoffset .1s linear, stroke .2s; }
+    .timer strong { font-size: 22px; z-index: 1; }
+
+    .problem-card {
+      margin: 20px 0 14px; min-height: 132px; display: grid; place-items: center;
+      background: linear-gradient(145deg, #f7fbff, #f6fffb);
+      border: 1px solid var(--line); border-radius: 22px; text-align: center;
+    }
+    .problem { font-size: clamp(42px, 13vw, 62px); font-weight: 900; color: var(--navy); letter-spacing: 1px; }
+    .problem-card.correct { animation: flashGood .25s; }
+    .problem-card.wrong { animation: shake .28s; }
+    @keyframes flashGood { 50% { background: #dff8ed; border-color: #82ddb9; } }
+    @keyframes shake { 25% { transform: translateX(-6px); } 50% { transform: translateX(6px); } 75% { transform: translateX(-3px); } }
+
+    .answer-display {
+      height: 60px; border: 2px solid #dce6ee; border-radius: 15px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 30px; font-weight: 850; color: var(--navy); background: white;
+      margin-bottom: 12px; overflow: hidden;
+    }
+    .answer-display.empty { color: #a2b0bd; font-size: 18px; font-weight: 650; }
+
+    .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .key {
+      border: 0; border-radius: 13px; min-height: 52px; background: #edf3f8;
+      color: var(--navy); font-size: 22px; font-weight: 850; cursor: pointer;
+      box-shadow: inset 0 -2px rgba(16,42,67,.06);
+    }
+    .key:hover { filter: brightness(.97); }
+    .key.delete { color: var(--red); font-size: 19px; }
+
+    .game-actions { display: grid; grid-template-columns: .9fr 1.6fr; gap: 9px; margin-top: 10px; }
+    .skip-btn { border-radius: 14px; color: #6b4e00; background: #fff2c7; }
+    .answer-btn { min-height: 54px; border-radius: 14px; color: white; background: var(--mint); font-size: 17px; }
+
+    .result { text-align: center; padding: 4px 4px 18px; }
+    .medal { font-size: 60px; line-height: 1; margin: 4px 0 12px; }
+    .result h2 { margin: 0; font-size: 27px; }
+    .big-score { font-size: 66px; line-height: 1; font-weight: 950; color: var(--blue); margin: 15px 0 2px; }
+    .score-label { color: var(--muted); }
+    .result-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 20px 0; }
+    .result-cell { background: #f4f8fb; border-radius: 13px; padding: 10px 4px; }
+    .result-cell strong { display: block; font-size: 21px; }
+    .result-cell span { font-size: 11px; color: var(--muted); }
+    .result-actions { display: grid; gap: 9px; }
+
+    .history-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .history-head h2 { margin: 0; font-size: 23px; }
+    .clear-btn { color: var(--red); background: transparent; padding: 8px; font-size: 13px; }
+    .table-wrap { border: 1px solid var(--line); border-radius: 15px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 12px 10px; text-align: center; border-bottom: 1px solid var(--line); }
+    th { color: var(--muted); background: #f6f9fb; font-size: 11px; text-transform: uppercase; letter-spacing: .4px; }
+    td { font-size: 14px; }
+    td:nth-child(2) { font-size: 19px; font-weight: 900; color: var(--blue); }
+    tr:last-child td { border-bottom: 0; }
+    .rank { font-weight: 900; }
+    .empty-history { color: var(--muted); text-align: center; padding: 34px 10px; }
+    .back-space { margin-top: 14px; }
+
+    .toast {
+      position: absolute; left: 50%; bottom: 18px; transform: translate(-50%, 20px);
+      background: #122536; color: white; padding: 10px 15px; border-radius: 999px;
+      font-size: 13px; opacity: 0; pointer-events: none; transition: .2s; white-space: nowrap;
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    @media (max-height: 740px) {
+      body { padding: 0; }
+      .app { min-height: 100dvh; border-radius: 0; }
+      .topbar { padding: 13px 18px; }
+      .logo { width: 38px; height: 38px; border-radius: 11px; }
+      main { padding: 14px 18px; }
+      .problem-card { margin: 12px 0 9px; min-height: 96px; }
+      .problem { font-size: 42px; }
+      .answer-display { height: 48px; margin-bottom: 8px; }
+      .keypad { gap: 6px; }
+      .key { min-height: 44px; }
+      .game-actions { margin-top: 7px; }
+      .answer-btn { min-height: 46px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">∑</div>
+        <div>
+          <h1>Математический тренажёр</h1>
+          <p class="subtitle">Считай быстро. Улучшай результат.</p>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="homeScreen" class="screen active">
+        <div class="hero">
+          <div class="hero-icon">7+5</div>
+          <h2>30 секунд математики</h2>
+          <p>Реши как можно больше примеров на сложение и вычитание.</p>
+        </div>
+
+        <div class="setting">
+          <label for="level">Сложность</label>
+          <select id="level" aria-label="Сложность">
+            <option value="10">До 10</option>
+            <option value="20" selected>До 20</option>
+            <option value="100">До 100</option>
+          </select>
+        </div>
+
+        <button id="startBtn" class="primary">Начать игру</button>
+        <div class="rules">
+          <div class="rule"><strong>30</strong><span>секунд</span></div>
+          <div class="rule"><strong>+ −</strong><span>действия</span></div>
+          <div class="rule"><strong>1</strong><span>балл за ответ</span></div>
+        </div>
+        <button id="historyBtn" class="secondary">Таблица результатов</button>
+      </section>
+
+      <section id="gameScreen" class="screen" aria-live="polite">
+        <div class="game-head">
+          <div class="stat"><span>Верно</span><strong id="score">0</strong></div>
+          <div class="timer" aria-label="Оставшееся время">
+            <svg viewBox="0 0 70 70" aria-hidden="true">
+              <circle class="track" cx="35" cy="35" r="30"></circle>
+              <circle id="timerRing" class="progress" cx="35" cy="35" r="30"></circle>
+            </svg>
+            <strong id="timerText">30</strong>
+          </div>
+          <div class="stat"><span>Пропущено</span><strong id="skipped">0</strong></div>
+        </div>
+
+        <div id="problemCard" class="problem-card">
+          <div id="problem" class="problem">8 + 7</div>
+        </div>
+        <div id="answerDisplay" class="answer-display empty">Введите ответ</div>
+
+        <div class="keypad" aria-label="Цифровая клавиатура">
+          <button class="key" data-key="1">1</button><button class="key" data-key="2">2</button><button class="key" data-key="3">3</button>
+          <button class="key" data-key="4">4</button><button class="key" data-key="5">5</button><button class="key" data-key="6">6</button>
+          <button class="key" data-key="7">7</button><button class="key" data-key="8">8</button><button class="key" data-key="9">9</button>
+          <button class="key delete" data-key="delete" aria-label="Удалить цифру">⌫</button><button class="key" data-key="0">0</button><button class="key" data-key="clear">C</button>
+        </div>
+        <div class="game-actions">
+          <button id="skipBtn" class="skip-btn">Пропустить</button>
+          <button id="answerBtn" class="answer-btn">✓ Ответить</button>
+        </div>
+      </section>
+
+      <section id="resultScreen" class="screen">
+        <div class="result">
+          <div id="medal" class="medal">🏆</div>
+          <h2>Время вышло!</h2>
+          <div id="finalScore" class="big-score">0</div>
+          <div class="score-label">правильных ответов</div>
+          <div class="result-grid">
+            <div class="result-cell"><strong id="finalWrong">0</strong><span>ошибок</span></div>
+            <div class="result-cell"><strong id="finalSkipped">0</strong><span>пропущено</span></div>
+            <div class="result-cell"><strong id="bestScore">0</strong><span>личный рекорд</span></div>
+          </div>
+          <div class="result-actions">
+            <button id="againBtn" class="primary">Сыграть ещё раз</button>
+            <button id="resultHistoryBtn" class="secondary">Таблица результатов</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="historyScreen" class="screen">
+        <div class="history-head">
+          <h2>Лучшие результаты</h2>
+          <button id="clearHistoryBtn" class="clear-btn">Очистить</button>
+        </div>
+        <div id="historyContent"></div>
+        <div class="back-space"><button id="backBtn" class="secondary">← На главную</button></div>
+      </section>
+    </main>
+    <div id="toast" class="toast">Верно!</div>
+  </div>
+
+  <script>
+    (() => {
+      'use strict';
+
+      const GAME_SECONDS = 30;
+      const STORAGE_KEY = 'mathTrainerResultsV1';
+      const CIRCUMFERENCE = 2 * Math.PI * 30;
+      const $ = (id) => document.getElementById(id);
+
+      const screens = {
+        home: $('homeScreen'), game: $('gameScreen'), result: $('resultScreen'), history: $('historyScreen')
+      };
+      let score = 0, wrong = 0, skipped = 0, answer = '', correctAnswer = 0;
+      let running = false, endAt = 0, timerId = null, lastProblem = '';
+
+      $('timerRing').style.strokeDasharray = String(CIRCUMFERENCE);
+      $('timerRing').style.strokeDashoffset = '0';
+
+      function showScreen(name) {
+        Object.values(screens).forEach((screen) => screen.classList.remove('active'));
+        screens[name].classList.add('active');
+      }
+
+      function randomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+
+      function newProblem() {
+        const limit = Number($('level').value);
+        let a, b, op, label;
+        do {
+          op = Math.random() < .5 ? '+' : '−';
+          if (op === '+') {
+            a = randomInt(1, limit - 1);
+            b = randomInt(1, limit - a);
+            correctAnswer = a + b;
+          } else {
+            a = randomInt(2, limit);
+            b = randomInt(1, a);
+            correctAnswer = a - b;
+          }
+          label = `${a} ${op} ${b}`;
+        } while (label === lastProblem);
+        lastProblem = label;
+        $('problem').textContent = label;
+        answer = '';
+        renderAnswer();
+      }
+
+      function renderAnswer() {
+        const el = $('answerDisplay');
+        if (answer === '') {
+          el.textContent = 'Введите ответ';
+          el.classList.add('empty');
+        } else {
+          el.textContent = answer;
+          el.classList.remove('empty');
+        }
+      }
+
+      function inputKey(key) {
+        if (!running) return;
+        if (/^\d$/.test(key) && answer.length < 4) answer += key;
+        if (key === 'delete') answer = answer.slice(0, -1);
+        if (key === 'clear') answer = '';
+        renderAnswer();
+      }
+
+      function animateCard(type) {
+        const card = $('problemCard');
+        card.classList.remove('correct', 'wrong');
+        void card.offsetWidth;
+        card.classList.add(type);
+      }
+
+      function submitAnswer() {
+        if (!running || answer === '') return;
+        if (Number(answer) === correctAnswer) {
+          score += 1;
+          $('score').textContent = score;
+          animateCard('correct');
+          newProblem();
+        } else {
+          wrong += 1;
+          animateCard('wrong');
+          answer = '';
+          renderAnswer();
+        }
+      }
+
+      function skipProblem() {
+        if (!running) return;
+        skipped += 1;
+        $('skipped').textContent = skipped;
+        newProblem();
+      }
+
+      function startGame() {
+        score = 0; wrong = 0; skipped = 0; answer = ''; running = true;
+        $('score').textContent = '0';
+        $('skipped').textContent = '0';
+        $('timerText').textContent = String(GAME_SECONDS);
+        $('timerRing').style.stroke = 'var(--blue)';
+        $('timerRing').style.strokeDashoffset = '0';
+        showScreen('game');
+        newProblem();
+        endAt = performance.now() + GAME_SECONDS * 1000;
+        clearInterval(timerId);
+        timerId = setInterval(updateTimer, 50);
+        updateTimer();
+      }
+
+      function updateTimer() {
+        const remainingMs = Math.max(0, endAt - performance.now());
+        const remaining = Math.ceil(remainingMs / 1000);
+        $('timerText').textContent = String(remaining);
+        $('timerRing').style.strokeDashoffset = String(CIRCUMFERENCE * (1 - remainingMs / (GAME_SECONDS * 1000)));
+        if (remaining <= 5) $('timerRing').style.stroke = 'var(--red)';
+        if (remainingMs <= 0) finishGame();
+      }
+
+      function getResults() {
+        try {
+          const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+          return Array.isArray(data) ? data : [];
+        } catch (_) { return []; }
+      }
+
+      function saveResult() {
+        const results = getResults();
+        results.push({ score, wrong, skipped, level: Number($('level').value), date: new Date().toISOString() });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(results.slice(-100)));
+      }
+
+      function finishGame() {
+        if (!running) return;
+        running = false;
+        clearInterval(timerId);
+        saveResult();
+        const results = getResults();
+        const best = results.reduce((max, item) => Math.max(max, Number(item.score) || 0), 0);
+        $('finalScore').textContent = score;
+        $('finalWrong').textContent = wrong;
+        $('finalSkipped').textContent = skipped;
+        $('bestScore').textContent = best;
+        $('medal').textContent = score === best && score > 0 ? '🏆' : score >= 10 ? '⭐' : '💪';
+        showScreen('result');
+      }
+
+      function formatDate(iso) {
+        const date = new Date(iso);
+        if (Number.isNaN(date.getTime())) return '—';
+        return new Intl.DateTimeFormat('ru-RU', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' }).format(date);
+      }
+
+      function openHistory() {
+        const results = getResults().sort((a, b) =>
+          (Number(b.score) - Number(a.score)) ||
+          (Number(a.wrong) - Number(b.wrong)) ||
+          (Number(a.skipped) - Number(b.skipped)) ||
+          String(b.date).localeCompare(String(a.date))
+        ).slice(0, 10);
+
+        if (!results.length) {
+          $('historyContent').innerHTML = '<div class="empty-history">Здесь появятся результаты после первой игры.</div>';
+        } else {
+          const medals = ['🥇', '🥈', '🥉'];
+          const rows = results.map((item, index) => `
+            <tr>
+              <td class="rank">${medals[index] || index + 1}</td>
+              <td>${Number(item.score) || 0}</td>
+              <td>${Number(item.level) || 20}</td>
+              <td>${formatDate(item.date)}</td>
+            </tr>`).join('');
+          $('historyContent').innerHTML = `
+            <div class="table-wrap"><table>
+              <thead><tr><th>Место</th><th>Верно</th><th>Уровень</th><th>Дата</th></tr></thead>
+              <tbody>${rows}</tbody>
+            </table></div>`;
+        }
+        showScreen('history');
+      }
+
+      function clearHistory() {
+        if (!getResults().length) return;
+        if (confirm('Удалить всю историю результатов на этом устройстве?')) {
+          localStorage.removeItem(STORAGE_KEY);
+          openHistory();
+          showToast('История очищена');
+        }
+      }
+
+      function showToast(text) {
+        const toast = $('toast');
+        toast.textContent = text;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 1400);
+      }
+
+      document.querySelectorAll('.key').forEach((key) => key.addEventListener('click', () => inputKey(key.dataset.key)));
+      $('startBtn').addEventListener('click', startGame);
+      $('againBtn').addEventListener('click', startGame);
+      $('answerBtn').addEventListener('click', submitAnswer);
+      $('skipBtn').addEventListener('click', skipProblem);
+      $('historyBtn').addEventListener('click', openHistory);
+      $('resultHistoryBtn').addEventListener('click', openHistory);
+      $('backBtn').addEventListener('click', () => showScreen('home'));
+      $('clearHistoryBtn').addEventListener('click', clearHistory);
+
+      document.addEventListener('keydown', (event) => {
+        if (!running) return;
+        if (/^\d$/.test(event.key)) inputKey(event.key);
+        if (event.key === 'Backspace') inputKey('delete');
+        if (event.key === 'Delete' || event.key === 'Escape') inputKey('clear');
+        if (event.key === 'Enter') submitAnswer();
+        if (event.key === ' ' || event.key === 'ArrowRight') { event.preventDefault(); skipProblem(); }
+      });
+
+      document.addEventListener('visibilitychange', () => {
+        if (running && !document.hidden) updateTimer();
+      });
+    })();
+  </script>
+</body>
+</html>
